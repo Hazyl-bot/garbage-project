@@ -63,7 +63,6 @@ public class MainController {
         String userId = request.getSession().getAttribute("userId").toString();
         String userName = request.getSession().getAttribute("userName").toString();
         User user = userService.getUserById(userId);
-        model.addAttribute("username",userName);
 
         return "index";
     }

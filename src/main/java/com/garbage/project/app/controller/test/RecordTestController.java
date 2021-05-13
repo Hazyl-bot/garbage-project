@@ -1,5 +1,6 @@
 package com.garbage.project.app.controller.test;
 
+import com.alibaba.fastjson.JSON;
 import com.garbage.project.model.GarbageBin;
 import com.garbage.project.model.Record;
 import com.garbage.project.param.RecordQueryParam;
@@ -18,6 +19,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -141,5 +143,26 @@ public class RecordTestController {
         param.setGmtCreated(LocalDateTime.now());
         Page<Record> list = recordService.list(param);
         return list.getContent().toString();
+    }
+
+    @RequestMapping("/getData")
+    public String getData(){
+        String userId = "6095d0e0552f033a607f5860";
+        RecordQueryParam param = new RecordQueryParam();
+        param.setOwnerId(userId);
+        Map<String, Long> data = recordService.CountByTypeAndUser(param);
+        String s = JSON.toJSONString(data);
+        return s;
+    }
+
+    @RequestMapping("/getData2")
+    public String getData2(){
+        String userId = "6095d0e0552f033a607f5860";
+        RecordQueryParam param = new RecordQueryParam();
+        param.setOwnerId(userId);
+        param.setGmtCreated(LocalDateTime.now());
+        //键为月份数，从1开始，值为记录数
+        Map<Integer, Long> map = recordService.CountByMonthAndUser(param);
+        return map.toString();
     }
 }

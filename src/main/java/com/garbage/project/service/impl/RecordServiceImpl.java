@@ -128,22 +128,17 @@ public class RecordServiceImpl implements RecordService {
             LOG.error("input record data is not correct");
             return null;
         }
-
-        Criteria criteria = new Criteria();
-        List<Criteria> subCris = new ArrayList<>();
-        Map<String,Long> counts = new HashMap<>();
-        if (StringUtils.hasText(param.getOwnerId())) {
-            subCris.add(Criteria.where("ownerId").is(param.getOwnerId()));
-        }else {
+        if (!StringUtils.hasText(param.getOwnerId())) {
             LOG.error("user id not provided!");
+            return null;
         }
+        Map<String,Long> counts = new HashMap<>();
         for (GARBAGE_TYPE type: GARBAGE_TYPE.values()){
-            String value = type.getValue();
-            subCris.add(Criteria.where("type").is(value));
-            criteria.andOperator(subCris.toArray(new Criteria[]{}));
+            Criteria criteria = Criteria.where("ownerId").is(param.getOwnerId())
+                    .andOperator(Criteria.where("type").is(type.getValue()));
             Query query = new Query(criteria);
             long count = mongoTemplate.count(query, Record.class);
-            counts.put(value,count);
+            counts.put(type.getValue(),count);
         }
         return counts;
     }
@@ -154,30 +149,35 @@ public class RecordServiceImpl implements RecordService {
             LOG.error("input record data is not correct");
             return null;
         }
+        if (param.getGmtCreated()==null){
+            LOG.error("no gmtCreated Date data provided");
+            return null;
+        }
+        if (!StringUtils.hasText(param.getOwnerId())) {
+            LOG.error("user id not provided!");
+            return null;
+        }
+
         int year = param.getGmtCreated().getYear();
         LocalDateTime start = LocalDateTime
                 .of(year, 1, 1, 0, 0);
         LocalDateTime end = start.plusMonths(1);
 
-
-        Criteria criteria = new Criteria();
-        List<Criteria> subCris = new ArrayList<>();
         Map<Integer,Long> counts = new HashMap<>();
-        if (StringUtils.hasText(param.getOwnerId())) {
-            subCris.add(Criteria.where("ownerId").is(param.getOwnerId()));
-        }else {
-            LOG.error("user id not provided!");
-            return null;
-        }
         int m=1;
         do{
-            subCris.add(Criteria.where("gmtCreated").gte(start));
-            subCris.add(Criteria.where("gmtCreated").lt(end));
-            criteria.andOperator(subCris.toArray(new Criteria[]{}));
+            Criteria criteria = Criteria.where("ownerId").is(param.getOwnerId())
+                    .andOperator(
+                    Criteria.where("gmtCreated").gte(start),
+                    Criteria.where("gmtCreated").lt(end)
+            );
             Query query = new Query(criteria);
             long count = mongoTemplate.count(query, Record.class);
             counts.put(m,count);
             m++;
+            start=start.plusMonths(1);
+            end = end.plusMonths(1);
+            LOG.warn(start.toString());
         }while (start.getYear()==year);
 
         return counts;

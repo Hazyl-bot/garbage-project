@@ -145,12 +145,42 @@ public class RecordServiceImpl implements RecordService {
             long count = mongoTemplate.count(query, Record.class);
             counts.put(value,count);
         }
-        return null;
+        return counts;
     }
 
     @Override
-    public Map<String,Long> CountByMonthAndUser(Record param) {
-        return null;
+    public Map<Integer, Long> CountByMonthAndUser(RecordQueryParam param) {
+        if (param==null){
+            LOG.error("input record data is not correct");
+            return null;
+        }
+        int year = param.getGmtCreated().getYear();
+        LocalDateTime start = LocalDateTime
+                .of(year, 1, 1, 0, 0);
+        LocalDateTime end = start.plusMonths(1);
+
+
+        Criteria criteria = new Criteria();
+        List<Criteria> subCris = new ArrayList<>();
+        Map<Integer,Long> counts = new HashMap<>();
+        if (StringUtils.hasText(param.getOwnerId())) {
+            subCris.add(Criteria.where("ownerId").is(param.getOwnerId()));
+        }else {
+            LOG.error("user id not provided!");
+            return null;
+        }
+        int m=1;
+        do{
+            subCris.add(Criteria.where("gmtCreated").gte(start));
+            subCris.add(Criteria.where("gmtCreated").lt(end));
+            criteria.andOperator(subCris.toArray(new Criteria[]{}));
+            Query query = new Query(criteria);
+            long count = mongoTemplate.count(query, Record.class);
+            counts.put(m,count);
+            m++;
+        }while (start.getYear()==year);
+
+        return counts;
     }
 
     @Override

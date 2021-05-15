@@ -5,6 +5,7 @@ import com.garbage.project.model.Record;
 import com.garbage.project.model.User;
 import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.RecordQueryParam;
+import com.garbage.project.param.UserLoginInfo;
 import com.garbage.project.param.UserQueryParam;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.service.RecordService;
@@ -57,8 +58,8 @@ public class MainController {
      * */
     @RequestMapping("/")
     public String index(Model model, HttpServletRequest request,HttpServletResponse response){
-        String userId = request.getSession().getAttribute("userId").toString();
-        String userName = request.getSession().getAttribute("userName").toString();
+        String userId = ((UserLoginInfo)request.getSession().getAttribute("userLoginInfo")).getUserId();
+        String userName = ((UserLoginInfo)request.getSession().getAttribute("userLoginInfo")).getUserName();
         User user = userService.getUserById(userId);
         model.addAttribute("username",userName);
 

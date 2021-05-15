@@ -81,7 +81,7 @@ public class UserController {
             session.setAttribute("userLoginInfo", userLoginInfo);
             model.addAttribute("result", true);
             model.addAttribute("msg", "login successful");
-            return "redirect:/main.html";
+            return "redirect:/";
         } else {
             model.addAttribute("msg", "userName or password not correct");
             model.addAttribute("result", false);
@@ -171,7 +171,7 @@ public class UserController {
         UserQueryParam param = new UserQueryParam();
         param.setEmail(email);
         Page<User> list = userService.list(param);
-        if (list.isEmpty() || list == null){
+        if (list == null || list.isEmpty()){
             model.addAttribute("msg","用户不存在,请先注册");
             LOG.warn("用户不存在,请先注册");
             return "register";

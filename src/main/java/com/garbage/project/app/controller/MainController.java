@@ -6,6 +6,8 @@ import com.garbage.project.model.Record;
 import com.garbage.project.model.User;
 import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.RecordQueryParam;
+import com.garbage.project.param.UserLoginInfo;
+import com.garbage.project.param.UserQueryParam;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.service.RecordService;
 import com.garbage.project.service.UserService;

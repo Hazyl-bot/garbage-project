@@ -17,7 +17,7 @@ public interface RecordService {
 
     Map<String,Long> CountByTypeAndUser(Record param);
 
-    Map<String,Long> CountByMonthAndUser(Record param);
+    Map<Integer,Long> CountByMonthAndUser(RecordQueryParam param);
 
     Record add(Record record);
 

@@ -1,5 +1,6 @@
 package com.garbage.project.app.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.garbage.project.model.GarbageBin;
 import com.garbage.project.model.Record;
 import com.garbage.project.model.User;
@@ -17,16 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -58,10 +58,13 @@ public class MainController {
      * */
     @RequestMapping("/")
     public String index(Model model, HttpServletRequest request,HttpServletResponse response){
-        String userId = ((UserLoginInfo)request.getSession().getAttribute("userLoginInfo")).getUserId();
-        String userName = ((UserLoginInfo)request.getSession().getAttribute("userLoginInfo")).getUserName();
+        if (request.getSession()==null){
+            model.addAttribute("username","User");
+            return "index";
+        }
+        String userId = request.getSession().getAttribute("userId").toString();
+        String userName = request.getSession().getAttribute("userName").toString();
         User user = userService.getUserById(userId);
-        model.addAttribute("username",userName);
 
         return "index";
     }
@@ -80,9 +83,19 @@ public class MainController {
                             HttpServletRequest request,HttpServletResponse response){
         GarbageQueryParam gbParam = new GarbageQueryParam();
         gbParam.setLocation(location);
-        gbParam.setType(type);
-        Page<GarbageBin> list = garbageService.list(gbParam);
-        GarbageBin garbageBin = list.getContent().get(0);
+        //这里可能找到多个不同类型的垃圾箱
+        List<GarbageBin> content = garbageService.list(gbParam).getContent();
+        GarbageBin garbageBin = null;
+        for (GarbageBin item : content){
+            if (item.getType().getValue().equals(type.getValue())){
+                garbageBin=item;
+                break;
+            }
+        }
+        if (garbageBin == null){
+            model.addAttribute("msg","找不到所选垃圾箱或类型不匹配！");
+            return "addRecord";
+        }
         String userId = request.getSession().getAttribute("userId").toString();
         Record record = new Record();
         record.setOwnerId(userId);
@@ -95,9 +108,30 @@ public class MainController {
         }else {
             LOGGER.warn("add failed");
         }
-        return "/takeout";
+        return "addRecord";
     }
 
+    @RequestMapping("/getMonthlyData")
+    @ResponseBody
+    public String getMonthlyData(HttpServletRequest request,Model model){
+        String userId = request.getSession().getAttribute("userId").toString();
+        RecordQueryParam param = new RecordQueryParam();
+        param.setOwnerId(userId);
+        param.setGmtCreated(LocalDateTime.now());
+        //键为月份数，从1开始，值为记录数
+        Map<Integer, Long> map = recordService.CountByMonthAndUser(param);
+        return map.toString();
+    }
 
+    @RequestMapping("/getTypeData")
+    @ResponseBody
+    public String getTypeData(HttpServletRequest request,Model model){
+        String userId = request.getSession().getAttribute("userId").toString();
+        RecordQueryParam param = new RecordQueryParam();
+        param.setOwnerId(userId);
+        Map<String, Long> data = recordService.CountByTypeAndUser(param);
+        String s = JSON.toJSONString(data);
+        return s;
+    }
 
 }

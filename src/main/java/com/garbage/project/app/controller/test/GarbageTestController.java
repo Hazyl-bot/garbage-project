@@ -12,7 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/gbtest")
@@ -23,6 +28,44 @@ public class GarbageTestController {
     @Autowired
     private GarbageService garbageService;
 
+    private List<GarbageBin> init = new ArrayList<>();
+
+    @PostConstruct
+    private void initTest(){
+        for (int i=0;i<5;i++){
+            GarbageBin garbageBin = new GarbageBin();
+            garbageBin.setCapacity(100*i);
+            garbageBin.setContain(0);
+            SecureRandom random = new SecureRandom();
+            int r = random.nextInt(6)+1;
+            switch (r){
+                case 1:
+                    garbageBin.setType(GARBAGE_TYPE.RECYCLABLE);
+                    break;
+                case 2:
+                    garbageBin.setType(GARBAGE_TYPE.HARMFUL);
+                    break;
+                case 3:
+                    garbageBin.setType(GARBAGE_TYPE.OTHER);
+                    break;
+                case 4:
+                    garbageBin.setType(GARBAGE_TYPE.WASTE);
+                    break;
+                case 5:
+                    garbageBin.setType(GARBAGE_TYPE.WET);
+                    break;
+                case 6:
+                    garbageBin.setType(GARBAGE_TYPE.DRY);
+                    break;
+                default:
+                    garbageBin.setType(GARBAGE_TYPE.OTHER);
+                    break;
+            }
+            garbageBin.setLocation("njupt-"+i);
+            init.add(garbageBin);
+        }
+    }
+
 //    @GetMapping("/getAll")
 //    public Page<GarbageBin> getAll(){
 //        GarbageQueryParam param = new GarbageQueryParam();
@@ -30,15 +73,11 @@ public class GarbageTestController {
 
     @GetMapping("/testadd")
     public String add(){
-        GarbageBin garbageBin = new GarbageBin();
-        garbageBin.setId("thisisaId");
-        garbageBin.setContain(100);
-        garbageBin.setCapacity(500);
-        garbageBin.setType(GARBAGE_TYPE.OTHER);
-        garbageBin.setLocation("njupt-1");
-        LOG.warn(garbageBin.toString());
-        GarbageBin bin = garbageService.add(garbageBin);
-        return garbageBin.toString();
+        for (GarbageBin item : init){
+            GarbageBin add = garbageService.add(item);
+            LOG.warn(add.toString());
+        }
+        return init.toString();
     }
 
     @GetMapping("/testdel")

@@ -59,13 +59,14 @@ public class GarbageController {
 
     @GetMapping("/gb")
     public String toAddPage(Model model){
-        List<GARBAGE_TYPE> types = new ArrayList<>();
-        types.add(GARBAGE_TYPE.HARMFUL);
-        types.add(GARBAGE_TYPE.RECYCLABLE);
-        types.add(GARBAGE_TYPE.OTHER);
-        types.add(GARBAGE_TYPE.DRY);
-        types.add(GARBAGE_TYPE.WET);
-        model.addAttribute("types",types);
+        //这个好像没用？
+//        List<GARBAGE_TYPE> types = new ArrayList<>();
+//        types.add(GARBAGE_TYPE.HARMFUL);
+//        types.add(GARBAGE_TYPE.RECYCLABLE);
+//        types.add(GARBAGE_TYPE.OTHER);
+//        types.add(GARBAGE_TYPE.DRY);
+//        types.add(GARBAGE_TYPE.WET);
+//        model.addAttribute("types",types);
         return "addGarbageBin";
     }
 

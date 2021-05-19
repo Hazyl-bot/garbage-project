@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -72,29 +73,49 @@ public class MainController {
 
     /**
      * 用户选择
+     * 给出垃圾箱列表，所有可用类型列表
      * */
     @RequestMapping("/takeout")
     public String takeout(Model model){
+        List<GarbageBin> garbageBins = garbageService.getAll();
+        List<String> locations = new ArrayList<>();
+        List<String> gbIds = new ArrayList<>();
+        List<String> types = new ArrayList<>();
+        for (GarbageBin item: garbageBins){
+            locations.add(item.getLocation());
+            gbIds.add(item.getId());
+            if (!types.contains(item.getType().getName())){
+                types.add(item.getType().getName());
+            }
+        }
+        model.addAttribute("locations",locations);
+        model.addAttribute("gbIds",gbIds);
+        model.addAttribute("types",types);
         return "addRecord";
     }
 
+    /**
+     * 丢垃圾：点击按钮转到addrecord界面，两个下拉列表一个类型，一个是location
+     * 根据这两个参数查询垃圾箱，找不到则返回，找到则检查类型和容量，不符合要求则回到表格，符合则添加成功
+     * 转到历史列表
+     * */
     @PostMapping("/record/add")
     public String addRecord(@RequestParam String location,GARBAGE_TYPE type,Model model,
                             HttpServletRequest request,HttpServletResponse response){
         GarbageQueryParam gbParam = new GarbageQueryParam();
         gbParam.setLocation(location);
+        gbParam.setType(type);
         //这里可能找到多个不同类型的垃圾箱
         List<GarbageBin> content = garbageService.list(gbParam).getContent();
-        GarbageBin garbageBin = null;
-        for (GarbageBin item : content){
-            if (item.getType().getValue().equals(type.getValue())){
-                garbageBin=item;
-                break;
-            }
-        }
-        if (garbageBin == null){
+
+        if (content == null || content.isEmpty()){
             model.addAttribute("msg","找不到所选垃圾箱或类型不匹配！");
-            return "addRecord";
+            return "redirect:/takeout";
+        }
+        GarbageBin garbageBin = content.get(0);
+        if (garbageBin.getContain()>=garbageBin.getCapacity()){
+            model.addAttribute("msg","垃圾箱已满，请选择其他可用垃圾箱！");
+            return "redirect:/takeout";
         }
         String userId = request.getSession().getAttribute("userId").toString();
         Record record = new Record();
@@ -130,8 +151,7 @@ public class MainController {
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         Map<String, Long> data = recordService.CountByTypeAndUser(param);
-        String s = JSON.toJSONString(data);
-        return s;
+        return JSON.toJSONString(data);
     }
 
 }

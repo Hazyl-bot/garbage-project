@@ -167,7 +167,7 @@ public class UserController {
         Page<Record> records = recordService.list(param);
         user.setRecord(records.getContent());
         model.addAttribute("records",records);
-        return "myProfile";
+        return "my-profile";
     }
 
 

@@ -74,11 +74,19 @@ public class MainController {
         Calendar calendar = Calendar.getInstance();
         int month = calendar.get(Calendar.MONTH);
         for (int i = 0; i < 12; i++){
-            monthlyLabel.add(monthName[(month + i)%12]);
-            monthlyData.add(monthlyMap.get((month + i)%12));
+            monthlyLabel.add(monthName[(month + i + 1)%12]);
+            monthlyData.add(monthlyMap.get((month + i + 1)%12));
         }
         model.addAttribute("monthlyLabel", monthlyLabel);
         model.addAttribute("monthlyData", monthlyData);
+
+        Map<String, Long> typeMap = getTypeData(userId);
+        List<Long> typeData = new ArrayList<>();
+        for (GARBAGE_TYPE type: GARBAGE_TYPE.values()){
+            typeData.add(typeMap.get(type.getValue()));
+            model.addAttribute(type.getValue(), typeMap.get(type.getValue()));
+        }
+        model.addAttribute("typeData", typeData);
 
         model.addAttribute("username", userName);
         return "index";
@@ -146,7 +154,7 @@ public class MainController {
         return "addRecord";
     }
 
-    public Map<Integer, Long> getMonthlyData(String userId){
+    private Map<Integer, Long> getMonthlyData(String userId){
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         param.setGmtCreated(LocalDateTime.now());
@@ -154,14 +162,10 @@ public class MainController {
         return recordService.CountByMonthAndUser(param);
     }
 
-    @RequestMapping("/getTypeData")
-    @ResponseBody
-    public String getTypeData(HttpServletRequest request,Model model){
-        String userId = request.getSession().getAttribute("userId").toString();
+    private Map<String, Long> getTypeData(String userId){
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
-        Map<String, Long> data = recordService.CountByTypeAndUser(param);
-        return JSON.toJSONString(data);
+        return recordService.CountByTypeAndUser(param);
     }
 
 }

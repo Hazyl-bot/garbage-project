@@ -110,7 +110,7 @@ const myLineChart = new Chart(ctxArea, {
       caretPadding: 10,
       callbacks: {
         label: function(tooltipItem, chart) {
-          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+          const datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
           return datasetLabel + number_format(tooltipItem.yLabel) + " 袋";
         }
       }

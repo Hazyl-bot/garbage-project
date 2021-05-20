@@ -62,7 +62,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 可回收垃圾</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${RECYCLABLE}">18</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-recycle fa-2x text-gray-300"></i>
@@ -80,7 +80,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 厨余垃圾</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${WASTE}">18</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-utensils fa-2x text-gray-300"></i>
@@ -98,7 +98,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 干垃圾</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${DRY}">18</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-tint-slash fa-2x text-gray-300"></i>
@@ -116,7 +116,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 湿垃圾</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${WET}">18</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-tint fa-2x text-gray-300"></i>
@@ -134,7 +134,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 有害垃圾</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${HARMFUL}">18</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
@@ -152,7 +152,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 其他垃圾</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${OTHER}">18</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-trash fa-2x text-gray-300"></i>
@@ -190,7 +190,7 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">垃圾种类概览</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
@@ -199,13 +199,22 @@
                                     </div>
                                     <div class="mt-4 text-center small">
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
+                                            <i class="fas fa-circle text-primary"></i> 可回收垃圾
                                         </span>
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
+                                            <i class="fas fa-circle text-warning"></i> 厨余垃圾
                                         </span>
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
+                                            <i class="fas fa-circle text-info"></i> 干垃圾
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-success"></i> 湿垃圾
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-danger"></i> 有害垃圾
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-secondary"></i> 其他垃圾
                                         </span>
                                     </div>
                                 </div>
@@ -277,6 +286,9 @@
         /*<![CDATA[*/
         const monthlyData = [[${monthlyData}]];
         const monthlyLabel = [[${monthlyLabel}]];
+        const typeData = [[${typeData}]];
+        // const typeData = [1, 2, 3, 4, 5, 1];
+        console.log(typeData);
         /*]]>*/
     </script>
 

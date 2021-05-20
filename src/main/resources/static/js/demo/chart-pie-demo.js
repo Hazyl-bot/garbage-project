@@ -7,11 +7,11 @@ const ctxPie = document.getElementById("myPieChart");
 const myPieChart = new Chart(ctxPie, {
   type: 'doughnut',
   data: {
-    labels: ["Direct", "Referral", "Social"],
+    labels: ["可回收垃圾", "厨余垃圾", "干垃圾", "湿垃圾", "有害垃圾", "其他垃圾"],
     datasets: [{
-      data: [55, 30, 15],
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+      data: typeData,
+      backgroundColor: ['#4e73df', '#f6c23e', '#36b9cc', '#1cc88a', '#e74a3b', '#858796'],
+      hoverBackgroundColor: ['#2e59d9', '#dba00a', '#2ea6b7', '#169d6c', '#cc2919', '#5a5c69'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },

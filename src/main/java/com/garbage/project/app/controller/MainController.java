@@ -7,7 +7,6 @@ import com.garbage.project.model.User;
 import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.RecordQueryParam;
 import com.garbage.project.param.UserLoginInfo;
-import com.garbage.project.param.UserQueryParam;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.service.RecordService;
 import com.garbage.project.service.UserService;
@@ -15,7 +14,6 @@ import com.garbage.project.util.GARBAGE_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +39,8 @@ public class MainController {
     private RecordService recordService;
 
     private UserService userService;
+
+    final static String[] monthName = {"一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
 
     @Autowired
     public MainController(GarbageService garbageService, RecordService recordService, UserService userService) {
@@ -59,13 +60,33 @@ public class MainController {
      * */
     @RequestMapping("/")
     public String index(Model model, HttpServletRequest request,HttpServletResponse response){
-        if (request.getSession()==null){
-            model.addAttribute("username","User");
-            return "index";
+        UserLoginInfo userLoginInfo = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        if (userLoginInfo==null){
+            return "redirect:/user/login";
         }
-        String userId = request.getSession().getAttribute("userId").toString();
-        String userName = request.getSession().getAttribute("userName").toString();
-        User user = userService.getUserById(userId);
+        String userId = userLoginInfo.getUserId();
+        String userName = userLoginInfo.getUserName();
+        model.addAttribute("username", userName);
+
+        Map<Integer, Long> monthlyMap = getMonthlyData(userId);
+        List<String> monthlyLabel = new ArrayList<>();
+        List<Long> monthlyData = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        for (int i = 0; i < 12; i++){
+            monthlyLabel.add(monthName[(month + i + 1)%12]);
+            monthlyData.add(monthlyMap.get((month + i + 1)%12));
+        }
+        model.addAttribute("monthlyLabel", monthlyLabel);
+        model.addAttribute("monthlyData", monthlyData);
+
+        Map<String, Long> typeMap = getTypeData(userId);
+        List<Long> typeData = new ArrayList<>();
+        for (GARBAGE_TYPE type: GARBAGE_TYPE.values()){
+            typeData.add(typeMap.get(type.getValue()));
+            model.addAttribute(type.getValue(), typeMap.get(type.getValue()));
+        }
+        model.addAttribute("typeData", typeData);
 
         return "index";
     }
@@ -108,7 +129,7 @@ public class MainController {
         //这里可能找到多个不同类型的垃圾箱
         List<GarbageBin> content = garbageService.list(gbParam).getContent();
 
-        if (content == null || content.isEmpty()){
+        if (content.isEmpty()){
             model.addAttribute("msg","找不到所选垃圾箱或类型不匹配！");
             return "redirect:/takeout";
         }
@@ -132,26 +153,18 @@ public class MainController {
         return "addRecord";
     }
 
-    @RequestMapping("/getMonthlyData")
-    @ResponseBody
-    public String getMonthlyData(HttpServletRequest request,Model model){
-        String userId = request.getSession().getAttribute("userId").toString();
+    private Map<Integer, Long> getMonthlyData(String userId){
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         param.setGmtCreated(LocalDateTime.now());
-        //键为月份数，从1开始，值为记录数
-        Map<Integer, Long> map = recordService.CountByMonthAndUser(param);
-        return map.toString();
+        //键为月份数，从0开始，值为记录数
+        return recordService.CountByMonthAndUser(param);
     }
 
-    @RequestMapping("/getTypeData")
-    @ResponseBody
-    public String getTypeData(HttpServletRequest request,Model model){
-        String userId = request.getSession().getAttribute("userId").toString();
+    private Map<String, Long> getTypeData(String userId){
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
-        Map<String, Long> data = recordService.CountByTypeAndUser(param);
-        return JSON.toJSONString(data);
+        return recordService.CountByTypeAndUser(param);
     }
 
 }

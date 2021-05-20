@@ -2,6 +2,7 @@ package com.garbage.project.app.controller;
 
 import com.garbage.project.model.GarbageBin;
 import com.garbage.project.param.GarbageQueryParam;
+import com.garbage.project.param.UserLoginInfo;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.util.GARBAGE_TYPE;
 import io.lettuce.core.dynamic.annotation.Param;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +53,15 @@ public class GarbageController {
     }
 
     @RequestMapping("/gbs")
-    public String list(Model model){
+    public String list(HttpServletRequest request, Model model){
+        UserLoginInfo userLoginInfo = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        if (userLoginInfo==null){
+            return "redirect:/user/login";
+        }
+        String userId = userLoginInfo.getUserId();
+        String userName = userLoginInfo.getUserName();
+        model.addAttribute("username", userName);
+
         List<GarbageBin> all = garbageService.getAll();
         model.addAttribute("gbs",all);
         return "tables";

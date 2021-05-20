@@ -164,7 +164,7 @@ public class RecordServiceImpl implements RecordService {
         LocalDateTime end = start.plusMonths(1);
 
         Map<Integer,Long> counts = new HashMap<>();
-        int m=1;
+        int m=0;
         do{
             Criteria criteria = Criteria.where("ownerId").is(param.getOwnerId())
                     .andOperator(

@@ -38,7 +38,7 @@ public class MailUtil {
         // 设置发送方地址:
         message.setFrom(new InternetAddress(SENDER_EMAIL));
         // 设置接收方地址:
-        message.setRecipient(Message.RecipientType.TO, new InternetAddress("1136399235@qq.com"));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(reciever));
         // 设置邮件主题:
         message.setSubject("Reset Your Password", "UTF-8");
         // 设置邮件正文:

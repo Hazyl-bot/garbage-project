@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,8 @@ public class MainController {
     private RecordService recordService;
 
     private UserService userService;
+
+    final static String[] monthName = {"一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
 
     @Autowired
     public MainController(GarbageService garbageService, RecordService recordService, UserService userService) {
@@ -64,6 +67,19 @@ public class MainController {
         String userId = userLoginInfo.getUserId();
         String userName = userLoginInfo.getUserName();
         User user = userService.getUserById(userId);
+
+        Map<Integer, Long> monthlyMap = getMonthlyData(userId);
+        List<String> monthlyLabel = new ArrayList<>();
+        List<Long> monthlyData = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        for (int i = 0; i < 12; i++){
+            monthlyLabel.add(monthName[(month + i)%12]);
+            monthlyData.add(monthlyMap.get((month + i)%12));
+        }
+        model.addAttribute("monthlyLabel", monthlyLabel);
+        model.addAttribute("monthlyData", monthlyData);
+
         model.addAttribute("username", userName);
         return "index";
     }
@@ -130,16 +146,12 @@ public class MainController {
         return "addRecord";
     }
 
-    @RequestMapping("/getMonthlyData")
-    @ResponseBody
-    public String getMonthlyData(HttpServletRequest request,Model model){
-        String userId = request.getSession().getAttribute("userId").toString();
+    public Map<Integer, Long> getMonthlyData(String userId){
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         param.setGmtCreated(LocalDateTime.now());
-        //键为月份数，从1开始，值为记录数
-        Map<Integer, Long> map = recordService.CountByMonthAndUser(param);
-        return map.toString();
+        //键为月份数，从0开始，值为记录数
+        return recordService.CountByMonthAndUser(param);
     }
 
     @RequestMapping("/getTypeData")

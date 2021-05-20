@@ -110,9 +110,7 @@ public class UserController {
 
     @RequestMapping("/registerAction")
     public String registerAction(@RequestParam String name, @RequestParam String email
-            ,@RequestParam String password,@RequestParam String password2,Model model
-            , HttpServletRequest request, HttpServletResponse response) {
-        Map returnData = new HashMap();
+            ,@RequestParam String password,@RequestParam String password2,Model model) {
 
         // 判断登录名是否已存在
         User regedUser = getUserByLoginName(name);
@@ -148,7 +146,12 @@ public class UserController {
     @RequestMapping("/profile")
     public String showProfile(Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
-        String userId = session.getAttribute("userId").toString();
+        Object o = request.getSession().getAttribute("userLoginInfo");
+        if (o==null || o.getClass()!= UserLoginInfo.class){
+            return "redirect:/user/login";
+        }
+        UserLoginInfo info = (UserLoginInfo) o;
+        String userId = info.getUserId();
         User user = userService.getUserById(userId);
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(user.getId());
@@ -156,7 +159,7 @@ public class UserController {
         user.setRecord(records.getContent());
         model.addAttribute("user",user);
         model.addAttribute("records",records);
-        return "myProfile";
+        return "my-profile";
     }
 
 

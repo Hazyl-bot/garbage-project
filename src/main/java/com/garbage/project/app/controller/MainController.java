@@ -7,7 +7,6 @@ import com.garbage.project.model.User;
 import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.RecordQueryParam;
 import com.garbage.project.param.UserLoginInfo;
-import com.garbage.project.param.UserQueryParam;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.service.RecordService;
 import com.garbage.project.service.UserService;
@@ -15,7 +14,6 @@ import com.garbage.project.util.GARBAGE_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,8 +61,13 @@ public class MainController {
             model.addAttribute("username","User");
             return "index";
         }
-        String userId = request.getSession().getAttribute("userId").toString();
-        String userName = request.getSession().getAttribute("userName").toString();
+        Object o = request.getSession().getAttribute("userLoginInfo");
+        if (o==null || o.getClass()!= UserLoginInfo.class){
+            return "redirect:/user/login";
+        }
+        UserLoginInfo info = (UserLoginInfo) o;
+        String userId = info.getUserId();
+        String userName = info.getUserName();
         User user = userService.getUserById(userId);
 
         return "index";
@@ -100,11 +103,11 @@ public class MainController {
      * 转到历史列表
      * */
     @PostMapping("/record/add")
-    public String addRecord(@RequestParam String location,GARBAGE_TYPE type,Model model,
+    public String addRecord(@RequestParam String location,@RequestParam String type,Model model,
                             HttpServletRequest request,HttpServletResponse response){
         GarbageQueryParam gbParam = new GarbageQueryParam();
         gbParam.setLocation(location);
-        gbParam.setType(type);
+        gbParam.setType(GARBAGE_TYPE.valueOf(type));
         //这里可能找到多个不同类型的垃圾箱
         List<GarbageBin> content = garbageService.list(gbParam).getContent();
 
@@ -117,7 +120,8 @@ public class MainController {
             model.addAttribute("msg","垃圾箱已满，请选择其他可用垃圾箱！");
             return "redirect:/takeout";
         }
-        String userId = request.getSession().getAttribute("userId").toString();
+        UserLoginInfo info = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        String userId = info.getUserId();
         Record record = new Record();
         record.setOwnerId(userId);
         record.setGarbageBinId(garbageBin.getId());
@@ -126,6 +130,9 @@ public class MainController {
         Record add = recordService.add(record);
         if (add!=null){
             LOGGER.warn("Record "+add+" has been added");
+            Integer contain = garbageBin.getContain();
+            garbageBin.setContain(contain+1);
+            garbageService.modifyBin(garbageBin);
         }else {
             LOGGER.warn("add failed");
         }
@@ -135,7 +142,8 @@ public class MainController {
     @RequestMapping("/getMonthlyData")
     @ResponseBody
     public String getMonthlyData(HttpServletRequest request,Model model){
-        String userId = request.getSession().getAttribute("userId").toString();
+        UserLoginInfo info = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        String userId = info.getUserId();
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         param.setGmtCreated(LocalDateTime.now());
@@ -147,7 +155,8 @@ public class MainController {
     @RequestMapping("/getTypeData")
     @ResponseBody
     public String getTypeData(HttpServletRequest request,Model model){
-        String userId = request.getSession().getAttribute("userId").toString();
+        UserLoginInfo info = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        String userId = info.getUserId();
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         Map<String, Long> data = recordService.CountByTypeAndUser(param);

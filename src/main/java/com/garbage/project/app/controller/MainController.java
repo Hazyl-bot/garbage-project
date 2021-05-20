@@ -7,7 +7,6 @@ import com.garbage.project.model.User;
 import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.RecordQueryParam;
 import com.garbage.project.param.UserLoginInfo;
-import com.garbage.project.param.UserQueryParam;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.service.RecordService;
 import com.garbage.project.service.UserService;
@@ -15,7 +14,6 @@ import com.garbage.project.util.GARBAGE_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,14 +57,14 @@ public class MainController {
      * */
     @RequestMapping("/")
     public String index(Model model, HttpServletRequest request,HttpServletResponse response){
-        if (request.getSession()==null){
-            model.addAttribute("username","User");
-            return "index";
+        UserLoginInfo userLoginInfo = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        if (userLoginInfo==null){
+            return "redirect:/user/login";
         }
-        String userId = request.getSession().getAttribute("userId").toString();
-        String userName = request.getSession().getAttribute("userName").toString();
+        String userId = userLoginInfo.getUserId();
+        String userName = userLoginInfo.getUserName();
         User user = userService.getUserById(userId);
-
+        model.addAttribute("username", userName);
         return "index";
     }
 

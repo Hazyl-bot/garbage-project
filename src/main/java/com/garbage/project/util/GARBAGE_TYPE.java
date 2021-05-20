@@ -2,8 +2,8 @@ package com.garbage.project.util;
 
 public enum GARBAGE_TYPE {
 
-    RECYCLABLE("可回收垃圾","RECYCLABLE"), OTHER("其他垃圾","OTHER"),HARMFUL("有害垃圾","HARMFUL"),
-    WASTE("厨余垃圾","WASTE"),DRY("干垃圾","DRY"), WET("湿垃圾","WET");
+    RECYCLABLE("可回收垃圾","RECYCLABLE"), WASTE("厨余垃圾","WASTE"),DRY("干垃圾","DRY"),
+    WET("湿垃圾","WET"),HARMFUL("有害垃圾","HARMFUL"), OTHER("其他垃圾","OTHER");
     private String name;
     private String value;
 

@@ -57,6 +57,12 @@ public class UserController {
         return "login";
     }
 
+    @RequestMapping(path = "/logout")
+    public String logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        return "redirect:/user/login";
+    }
+
     @RequestMapping(path = "/authenticate")
     public String login(@RequestParam String name, @RequestParam String password, HttpServletRequest request,
                      HttpServletResponse response,Model model) {
@@ -147,14 +153,19 @@ public class UserController {
      * */
     @RequestMapping("/profile")
     public String showProfile(Model model, HttpServletRequest request){
-        HttpSession session = request.getSession();
-        String userId = session.getAttribute("userId").toString();
+        UserLoginInfo userLoginInfo = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        if (userLoginInfo==null){
+            return "redirect:/user/login";
+        }
+        String userId = userLoginInfo.getUserId();
+        String userName = userLoginInfo.getUserName();
+        model.addAttribute("username", userName);
+
         User user = userService.getUserById(userId);
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(user.getId());
         Page<Record> records = recordService.list(param);
         user.setRecord(records.getContent());
-        model.addAttribute("user",user);
         model.addAttribute("records",records);
         return "myProfile";
     }

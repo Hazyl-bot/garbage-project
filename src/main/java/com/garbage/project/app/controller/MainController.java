@@ -66,7 +66,7 @@ public class MainController {
         }
         String userId = userLoginInfo.getUserId();
         String userName = userLoginInfo.getUserName();
-        User user = userService.getUserById(userId);
+        model.addAttribute("username", userName);
 
         Map<Integer, Long> monthlyMap = getMonthlyData(userId);
         List<String> monthlyLabel = new ArrayList<>();
@@ -88,7 +88,6 @@ public class MainController {
         }
         model.addAttribute("typeData", typeData);
 
-        model.addAttribute("username", userName);
         return "index";
     }
 
@@ -130,7 +129,7 @@ public class MainController {
         //这里可能找到多个不同类型的垃圾箱
         List<GarbageBin> content = garbageService.list(gbParam).getContent();
 
-        if (content == null || content.isEmpty()){
+        if (content.isEmpty()){
             model.addAttribute("msg","找不到所选垃圾箱或类型不匹配！");
             return "redirect:/takeout";
         }

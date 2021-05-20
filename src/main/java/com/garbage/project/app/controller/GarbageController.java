@@ -31,11 +31,6 @@ public class GarbageController {
     @Autowired
     private GarbageService garbageService;
 
-//    @GetMapping("/getAll")
-//    public Page<GarbageBin> getAll(){
-//        GarbageQueryParam param = new GarbageQueryParam();
-//    }
-
     @RequestMapping("/add")
     public String add(@RequestParam("location")String location, @RequestParam("type")String type
             , @RequestParam("capacity")int capacity, @RequestParam("contain")int contain){

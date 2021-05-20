@@ -1,13 +1,10 @@
 package com.garbage.project.app.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.garbage.project.model.GarbageBin;
 import com.garbage.project.model.Record;
-import com.garbage.project.model.User;
 import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.RecordQueryParam;
 import com.garbage.project.param.UserLoginInfo;
-import com.garbage.project.param.UserQueryParam;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.service.RecordService;
 import com.garbage.project.service.UserService;
@@ -21,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,8 +46,6 @@ public class MainController {
         this.recordService = recordService;
         this.userService = userService;
     }
-
-
 
 
     /**
@@ -118,11 +112,24 @@ public class MainController {
     }
 
     /**
+    * 用户历史记录数据
+    * */
+    @RequestMapping("/records")
+    public String list(HttpServletRequest request,Model model){
+        UserLoginInfo info = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        String userId = info.getUserId();
+        Page<Record> records = getRecordByUser(userId);
+        List<Record> content = records.getContent();
+        model.addAttribute("records",content);
+        return "records";
+    }
+
+    /**
      * 丢垃圾：点击按钮转到addrecord界面，两个下拉列表一个类型，一个是location
      * 根据这两个参数查询垃圾箱，找不到则返回，找到则检查类型和容量，不符合要求则回到表格，符合则添加成功
      * 转到历史列表
      * */
-    @PostMapping("/record/add")
+    @PostMapping("/records/add")
     public String addRecord(@RequestParam String location,@RequestParam String type,Model model,
                             HttpServletRequest request,HttpServletResponse response){
         GarbageQueryParam gbParam = new GarbageQueryParam();
@@ -154,9 +161,11 @@ public class MainController {
             garbageBin.setContain(contain+1);
             garbageService.modifyBin(garbageBin);
         }else {
+            model.addAttribute("msg","垃圾分类异常，请联系管理员");
             LOGGER.warn("add failed");
         }
-        return "addRecord";
+        //回到历史记录页面
+        return "records";
     }
 
     private Map<Integer, Long> getMonthlyData(String userId){
@@ -171,6 +180,13 @@ public class MainController {
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         return recordService.CountByTypeAndUser(param);
+    }
+
+    private Page<Record> getRecordByUser(String userId){
+        RecordQueryParam param = new RecordQueryParam();
+        param.setOwnerId(userId);
+        Page<Record> records = recordService.list(param);
+        return records;
     }
 
 }

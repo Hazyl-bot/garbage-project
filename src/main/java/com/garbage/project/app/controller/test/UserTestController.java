@@ -84,4 +84,11 @@ public class UserTestController {
         user.setRecord(content);
         return user.toString();
     }
+
+    @GetMapping("/getById")
+    public String testGetById(String id){
+        User userById = userService.getUserById(id);
+        System.out.println(userById.toString());
+        return userById.toString();
+    }
 }

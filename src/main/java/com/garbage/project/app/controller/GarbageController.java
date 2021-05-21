@@ -35,7 +35,7 @@ public class GarbageController {
     public String add(@RequestParam("location")String location, @RequestParam("type")String type
             , @RequestParam("capacity")int capacity, @RequestParam("contain")int contain){
         GarbageBin garbageBin = new GarbageBin();
-        garbageBin.setLocation(location);//
+        garbageBin.setLocation(location);
         garbageBin.setType(GARBAGE_TYPE.valueOf(type));
         garbageBin.setCapacity(capacity);
         garbageBin.setContain(contain);

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/usertest")
+@RequestMapping("/test/user")
 public class UserTestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTestController.class);

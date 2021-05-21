@@ -3,6 +3,7 @@ package com.garbage.project.app.controller;
 import com.garbage.project.model.GarbageBin;
 import com.garbage.project.model.Record;
 import com.garbage.project.param.GarbageQueryParam;
+import com.garbage.project.param.RecordInfo;
 import com.garbage.project.param.RecordQueryParam;
 import com.garbage.project.param.UserLoginInfo;
 import com.garbage.project.service.GarbageService;
@@ -118,9 +119,15 @@ public class MainController {
     public String list(HttpServletRequest request,Model model){
         UserLoginInfo info = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
         String userId = info.getUserId();
-        Page<Record> records = getRecordByUser(userId);
-        List<Record> content = records.getContent();
-        model.addAttribute("records",content);
+        List<Record> records = getRecordByUser(userId).getContent();
+        List<RecordInfo> infoList = new ArrayList<>();
+        for (Record r:records){
+            GarbageBin bin = garbageService.getBinById(r.getGarbageBinId());
+            String location = bin.getLocation();
+            RecordInfo recordInfo = new RecordInfo(location,userId,r.getType(),r.getGmtCreated());
+            infoList.add(recordInfo);
+        }
+        model.addAttribute("records",infoList);
         return "records";
     }
 
@@ -185,8 +192,7 @@ public class MainController {
     private Page<Record> getRecordByUser(String userId){
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
-        Page<Record> records = recordService.list(param);
-        return records;
+        return recordService.list(param);
     }
 
 }

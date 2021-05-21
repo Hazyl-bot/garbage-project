@@ -67,7 +67,7 @@ public class RecordTestController {
             }
             //这里minus起作用了，但是数据库里还是now，可能事库内置识别的问题
             LocalDateTime created = LocalDateTime.now().minusMonths(i);
-            LocalDateTime c = LocalDateTime.of(2021,r^2%12,10,1,0,0);
+            LocalDateTime c = LocalDateTime.of(2021,(r^2)%12+1,10,1,0,0);
             record.setGmtCreated(created);
             record.setGmtModified(LocalDateTime.now());
             init.add(record);

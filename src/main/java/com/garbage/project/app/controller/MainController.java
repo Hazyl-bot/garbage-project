@@ -31,6 +31,9 @@ import java.util.Map;
 @Controller
 public class MainController {
 
+    //TODO:设置新密码页面和后端方法（UserController),丢垃圾完成后回到个人资料页
+    // BUG：丢垃圾表单提交无效
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private GarbageService garbageService;
@@ -136,7 +139,7 @@ public class MainController {
      * 根据这两个参数查询垃圾箱，找不到则返回，找到则检查类型和容量，不符合要求则回到表格，符合则添加成功
      * 转到历史列表
      * */
-    @PostMapping("/records/add")
+    @RequestMapping("/record/add")
     public String addRecord(@RequestParam String location,@RequestParam String type,Model model,
                             HttpServletRequest request,HttpServletResponse response){
         GarbageQueryParam gbParam = new GarbageQueryParam();

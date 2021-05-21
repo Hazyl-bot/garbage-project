@@ -19,7 +19,8 @@ public class AdminHandlerInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Boolean isAdmin = (Boolean) request.getSession().getAttribute("isAdmin");
         if(!isAdmin){
-            request.setAttribute("msg","NO ACCESS FOR THIS REQUEST");
+            request.setAttribute("msg","NO ACCESS, PLEASE LOGIN BY ADMIN ACCOUNT");
+            //request.getRequestDispatcher("/user/login").forward(request,response);
             request.getRequestDispatcher("/notFound").forward(request,response);
             return false;
         }else{

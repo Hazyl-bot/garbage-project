@@ -22,8 +22,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 所有的预加载属性都在controller里写好
@@ -85,6 +83,7 @@ public class UserController {
             HttpSession session = request.getSession();
             // 写入登录信息
             session.setAttribute("userLoginInfo", userLoginInfo);
+            session.setAttribute("isAdmin",regedUser.isAdmin());
             model.addAttribute("result", true);
             model.addAttribute("msg", "login successful");
             return "redirect:/";
@@ -102,7 +101,7 @@ public class UserController {
         Page<User> users = userService.list(param);
 
         // 如果登录名正确，只取第一个，要保证用户名不能重复
-        if (users != null && users.getContent() != null && users.getContent().size() > 0) {
+        if (users != null && users.getContent().size() > 0) {
             regedUser = users.getContent().get(0);
         }
 
@@ -116,9 +115,7 @@ public class UserController {
 
     @RequestMapping("/registerAction")
     public String registerAction(@RequestParam String name, @RequestParam String email
-            ,@RequestParam String password,@RequestParam String password2,Model model
-            , HttpServletRequest request, HttpServletResponse response) {
-        Map returnData = new HashMap();
+            ,@RequestParam String password,@RequestParam String password2,Model model) {
 
         // 判断登录名是否已存在
         User regedUser = getUserByLoginName(name);
@@ -166,8 +163,9 @@ public class UserController {
         param.setOwnerId(user.getId());
         Page<Record> records = recordService.list(param);
         user.setRecord(records.getContent());
+        model.addAttribute("user",user);
         model.addAttribute("records",records);
-        return "my-profile";
+        return "user-profile";
     }
 
 
@@ -184,7 +182,6 @@ public class UserController {
         Page<User> list = userService.list(param);
         if (list == null || list.isEmpty()){
             model.addAttribute("msg","用户不存在,请先注册");
-            LOG.warn("用户不存在,请先注册");
             return "register";
         }
         if (list.getContent().size()>1){
@@ -193,7 +190,7 @@ public class UserController {
             return "login";
         }
         User user = list.getContent().get(0);
-        String url = "127.0.0.1/user/resetPassword";
+        String url = "127.0.0.1/user/forgotPassword";
         try {
             MailUtil.sendEmail(url,email);
         } catch (Exception e) {

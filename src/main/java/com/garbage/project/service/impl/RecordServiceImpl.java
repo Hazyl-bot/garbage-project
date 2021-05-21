@@ -177,7 +177,7 @@ public class RecordServiceImpl implements RecordService {
             m++;
             start=start.plusMonths(1);
             end = end.plusMonths(1);
-            LOG.warn(start.toString());
+            //LOG.warn(start.toString());
         }while (start.getYear()==year);
 
         return counts;

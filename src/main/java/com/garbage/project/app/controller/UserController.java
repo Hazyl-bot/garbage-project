@@ -159,6 +159,8 @@ public class UserController {
         model.addAttribute("username", userName);
 
         User user = userService.getUserById(userId);
+        String email = user.getEmail();
+        model.addAttribute("email",email);
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(user.getId());
         Page<Record> records = recordService.list(param);

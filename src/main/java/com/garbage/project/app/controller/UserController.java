@@ -176,32 +176,54 @@ public class UserController {
         return "forgot-password";
     }
 
-    @RequestMapping("/rpwd")
-    public String send(@Param("email")String email,Model model){
+    @RequestMapping("/send")
+    public String send(@RequestParam String email,HttpServletRequest request,Model model){
         LOG.warn("send方法被调用");
         UserQueryParam param = new UserQueryParam();
         param.setEmail(email);
         Page<User> list = userService.list(param);
         if (list == null || list.isEmpty()){
             model.addAttribute("msg","用户不存在,请先注册");
-            return "register";
+            return "forgot-password";
         }
         if (list.getContent().size()>1){
             LOG.warn("不止一个用户，请注销账号或联系管理员");
             model.addAttribute("msg","不止一个用户，请注销账号或联系管理员");
-            return "login";
+            return "forgot-password";
         }
         User user = list.getContent().get(0);
         String url = "127.0.0.1/user/forgotPassword";
         try {
             MailUtil.sendEmail(url,email);
+            request.setAttribute("userId",user.getId());
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("failed to send email");
         }
         LOG.warn("邮件发送成功，请查看邮箱");
         model.addAttribute("msg","邮件发送成功，请查看邮箱");
+        return "forgot-password";
+    }
+
+    @RequestMapping("/reset")
+    public String resetPwd(@RequestParam String pwd,@RequestParam String pwd2
+            ,int code,HttpServletRequest request,Model model){
+        //TODO: 加入redis判断
+        String userId = (String) request.getSession().getAttribute("userId");
+        User user = userService.getUserById(userId);
+        if (user==null){
+            model.addAttribute("msg","未找到用户，请联系管理员");
+            return "forgot-password";
+        }
+        if (!pwd.equals(pwd2)){
+            model.addAttribute("msg","2次输入密码不匹配!");
+            return "forgot-password";
+        }
+        user.setPassword(pwd);
+        userService.modifyUser(user);
+        model.addAttribute("msg","密码修改成功，请用新密码登录");
         return "login";
     }
+
 
 }

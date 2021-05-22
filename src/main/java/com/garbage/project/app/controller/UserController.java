@@ -8,7 +8,6 @@ import com.garbage.project.param.UserQueryParam;
 import com.garbage.project.service.RecordService;
 import com.garbage.project.service.UserService;
 import com.garbage.project.util.MailUtil;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -120,13 +120,12 @@ public class UserController {
         // 判断登录名是否已存在
         User regedUser = getUserByLoginName(name);
         if (regedUser != null) {
-            model.addAttribute("msg","login name already exist");
+            model.addAttribute("msg","用户名已被占用");
             LOG.error("login name already exist");
-            LOG.error(regedUser.toString());
             return "register";
         }
         if (!password.equals(password2)){
-            model.addAttribute("msg","passwords are not the same!");
+            model.addAttribute("msg","两次密码输入不相同！");
             LOG.error("passwords are not the same!");
             return "register";
         }
@@ -136,10 +135,10 @@ public class UserController {
         user.setEmail(email);
         User newUser = userService.add(user);
         if (newUser != null && StringUtils.hasText(newUser.getId())) {
-            model.addAttribute("msg", "register succeed");
+            model.addAttribute("msg", "注册成功，请登录");
             LOG.error("register succeed");
         } else {
-            model.addAttribute("msg", "register failed");
+            model.addAttribute("msg", "注册失败，请联系工作人员");
             LOG.error("register failed");
         }
         return "login";

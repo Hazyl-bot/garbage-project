@@ -129,7 +129,7 @@ public class MainController {
      * 根据这两个参数查询垃圾箱，找不到则返回，找到则检查类型和容量，不符合要求则回到表格，符合则添加成功
      * 转到历史列表
      * */
-    @PostMapping("/records/add")
+    @PostMapping("/record/add")
     public String addRecord(@RequestParam String location,@RequestParam String type,Model model,
                             HttpServletRequest request,HttpServletResponse response){
         GarbageQueryParam gbParam = new GarbageQueryParam();

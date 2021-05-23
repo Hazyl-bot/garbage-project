@@ -63,7 +63,7 @@ public class GarbageServiceImpl implements GarbageService {
             subCris.add(Criteria.where("contain").is(param.getContain()));
         }
         if (param.getType()!=null) {
-            subCris.add(Criteria.where("type").is(param.getType().toString()));
+            subCris.add(Criteria.where("type").is(param.getType().getValue()));
         }
         if (param.getLastClean()!=null) {
             subCris.add(Criteria.where("lastClean").gte(param.getLastClean()));

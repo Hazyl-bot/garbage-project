@@ -174,7 +174,7 @@ public class MainController {
             LOGGER.warn("add failed");
         }
         //回到历史记录页面
-        return "user-profile";
+        return "redirect:/user/profile";
     }
 
     private Map<Integer, Long> getMonthlyData(String userId){

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -29,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 所有的预加载属性都在controller里写好
@@ -47,11 +50,14 @@ public class UserController {
 
     private final GarbageService garbageService;
 
+    private final RedisTemplate<String,String> template;
+
     @Autowired
-    public UserController(UserService userService, RecordService recordService, GarbageService garbageService) {
+    public UserController(UserService userService, RecordService recordService, GarbageService garbageService, RedisTemplate<String,String> template) {
         this.userService = userService;
         this.recordService = recordService;
         this.garbageService = garbageService;
+        this.template = template;
     }
 
     @PostConstruct
@@ -192,6 +198,21 @@ public class UserController {
         return "forgot-password";
     }
 
+    @RequestMapping("/forgeReset")
+    public String forgeReset(Model model, String code, RedirectAttributes redirectAttributes){
+        if (code==null){
+            redirectAttributes.addFlashAttribute("msg", "链接非法");
+            return "redirect:/user/login";
+        }
+        String userId = template.boundValueOps(code).get();
+        if (userId==null){
+            redirectAttributes.addFlashAttribute("msg", "链接已过期");
+            return "redirect:/user/login";
+        }
+        model.addAttribute("code", code);
+        return "forgeReset";
+    }
+
     @RequestMapping("/send")
     public String send(@RequestParam String email,HttpServletRequest request,Model model){
         LOG.warn("send方法被调用");
@@ -208,7 +229,9 @@ public class UserController {
             return "forgot-password";
         }
         User user = list.getContent().get(0);
-        String url = "127.0.0.1/user/forgotPassword";
+        String randomStr = getRandomString(32);
+        template.boundValueOps(randomStr).set(user.getId(), 30, TimeUnit.MINUTES);
+        String url = "127.0.0.1:8080/user/forgeReset?code=" + randomStr;
         try {
             MailUtil.sendEmail(url,email);
             request.setAttribute("userId",user.getId());
@@ -227,14 +250,23 @@ public class UserController {
     }
 
     @RequestMapping("/reset")
-    public String reset(@RequestParam String pwd, @RequestParam String pwd2, @RequestParam String callbackUrl
+    public String reset(@RequestParam String pwd, @RequestParam String pwd2, @RequestParam String callbackUrl, String code
             , HttpServletRequest request, RedirectAttributes redirectAttributes){
-        //TODO: 加入redis判断
+        LOG.info("code: " + code);
         UserLoginInfo userLoginInfo = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
-        String userId = userLoginInfo.getUserId();
+        String userId = null;
+        if (userLoginInfo == null && !code.isEmpty()){
+            userId = template.boundValueOps(code).get();
+            template.delete(code);
+        } else if (userLoginInfo == null) {
+            redirectAttributes.addFlashAttribute("msg","链接非法");
+            return "redirect:/user/login";
+        } else {
+            userId = userLoginInfo.getUserId();
+        }
         User user = userService.getUserById(userId);
         if (user==null){
-            redirectAttributes.addFlashAttribute("msg","未找到用户，请联系管理员");
+            redirectAttributes.addFlashAttribute("msg","链接非法，请重新发送邮件");
             return "redirect:" + callbackUrl;
         }
         if (!pwd.equals(pwd2)){
@@ -252,6 +284,17 @@ public class UserController {
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         return recordService.list(param);
+    }
+
+    private static String getRandomString(int length){
+        String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random=new Random();
+        StringBuffer sb=new StringBuffer();
+        for(int i=0;i<length;i++){
+            int number=random.nextInt(62);
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
     }
 
 }

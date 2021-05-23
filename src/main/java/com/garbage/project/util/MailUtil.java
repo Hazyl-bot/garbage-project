@@ -44,9 +44,8 @@ public class MailUtil {
         message.setSubject("Reset Your Password", "UTF-8");
         // 设置邮件正文:
         int code = (int) ((Math.random()+1) * 100000);
-        message.setText("<a>重置您的密码，请点击进入如下链接并输入验证码，30分钟后失效</a>" +
-                "<a href=" + url+">"+url+"</a>" +
-                "<p>验证码为：" +code+ "</p>", "UTF-8","html");
+        message.setText("<p>重置您的密码，请点击进入如下链接并输入验证码，30分钟后失效</p>" +
+                "<a href=" + url+">"+url+"</a>", "UTF-8","html");
         // 发送:
         Transport.send(message);
     }

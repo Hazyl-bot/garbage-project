@@ -47,9 +47,13 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <form th:action="@{/garbage/add}" method="post">
+                    <form th:action="@{/garbage/update}" method="post">
                         <fieldset>
                             <legend>Edit GarbageBin</legend>
+                            <div class="form-group" hidden>
+                                <label class="required">contain</label>
+                                <input name="id" class="form-control"th:value="${id}">
+                            </div>
                             <div class="form-group">
                                 <label class="required">location</label>
                                 <input type="text" name="location" class="form-control" placeholder="Fill in the location" th:value="${defaultLocation}">
@@ -66,13 +70,13 @@
                             </div>
                             <div class="form-group">
                                 <label class="required">capacity</label>
-                                <input type="Integer" name="capacity" class="form-control" placeholder="Fill in the capacity" th:value="${defaultCapacity}">
+                                <input type="number" name="capacity" class="form-control" placeholder="Fill in the capacity" th:value="${defaultCapacity}">
                             </div>
                             <div class="form-group">
                                 <label class="required">contain</label>
-                                <input type="Integer" name="contain" class="form-control" placeholder="Fill in the contain" th:value="${defaultContain}">
+                                <input type="number" name="contain" class="form-control" placeholder="Fill in the contain" th:value="${defaultContain}">
                             </div>
-                            <button class="btn btn-primary" th:id="${id}">submit</button>
+                            <button class="btn btn-primary bin-edit-submit-btn" type="submit">submit</button>
                         </fieldset>
                     </form>
 

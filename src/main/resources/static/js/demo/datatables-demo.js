@@ -26,3 +26,6 @@ document.querySelectorAll(".bin-edit-btn").forEach((i)=>{i.addEventListener("cli
   window.location = url;
 })})
 
+document.querySelector(".bin-edit-submit-btn").addEventListener("click", async ()=>{
+
+})

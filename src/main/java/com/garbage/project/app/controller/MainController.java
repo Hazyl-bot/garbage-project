@@ -36,19 +36,16 @@ public class MainController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
-    private GarbageService garbageService;
+    private final GarbageService garbageService;
 
-    private RecordService recordService;
-
-    private UserService userService;
+    private final RecordService recordService;
 
     final static String[] monthName = {"一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
 
     @Autowired
-    public MainController(GarbageService garbageService, RecordService recordService, UserService userService) {
+    public MainController(GarbageService garbageService, RecordService recordService) {
         this.garbageService = garbageService;
         this.recordService = recordService;
-        this.userService = userService;
     }
 
 
@@ -197,5 +194,6 @@ public class MainController {
         param.setOwnerId(userId);
         return recordService.list(param);
     }
+
 
 }

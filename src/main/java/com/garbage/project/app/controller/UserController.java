@@ -1,10 +1,13 @@
 package com.garbage.project.app.controller;
 
+import com.garbage.project.model.GarbageBin;
 import com.garbage.project.model.Record;
 import com.garbage.project.model.User;
+import com.garbage.project.param.RecordInfo;
 import com.garbage.project.param.RecordQueryParam;
 import com.garbage.project.param.UserLoginInfo;
 import com.garbage.project.param.UserQueryParam;
+import com.garbage.project.service.GarbageService;
 import com.garbage.project.service.RecordService;
 import com.garbage.project.service.UserService;
 import com.garbage.project.util.MailUtil;
@@ -22,6 +25,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 所有的预加载属性都在controller里写好
@@ -38,10 +43,13 @@ public class UserController {
 
     private RecordService recordService;
 
+    private final GarbageService garbageService;
+
     @Autowired
-    public UserController(UserService userService, RecordService recordService) {
+    public UserController(UserService userService, RecordService recordService, GarbageService garbageService) {
         this.userService = userService;
         this.recordService = recordService;
+        this.garbageService = garbageService;
     }
 
     @PostConstruct
@@ -160,12 +168,18 @@ public class UserController {
         User user = userService.getUserById(userId);
         String email = user.getEmail();
         model.addAttribute("email",email);
-        RecordQueryParam param = new RecordQueryParam();
-        param.setOwnerId(user.getId());
-        Page<Record> records = recordService.list(param);
-        user.setRecord(records.getContent());
         model.addAttribute("user",user);
-        model.addAttribute("records",records);
+
+
+        List<Record> records = getRecordByUser(userId).getContent();
+        List<RecordInfo> infoList = new ArrayList<>();
+        for (Record r:records){
+            GarbageBin bin = garbageService.getBinById(r.getGarbageBinId());
+            String location = bin.getLocation();
+            RecordInfo recordInfo = new RecordInfo(location,userId,r.getType(),r.getGmtCreated());
+            infoList.add(recordInfo);
+        }
+        model.addAttribute("records",infoList);
         return "user-profile";
     }
 
@@ -224,5 +238,11 @@ public class UserController {
         return "login";
     }
 
+
+    private Page<Record> getRecordByUser(String userId){
+        RecordQueryParam param = new RecordQueryParam();
+        param.setOwnerId(userId);
+        return recordService.list(param);
+    }
 
 }

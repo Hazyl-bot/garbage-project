@@ -87,7 +87,7 @@
                                             <td th:text="${gb.getContain()}"></td>
                                             <td th:text="${gb.getLastClean()}"></td>
                                             <td>
-                                                <button class="btn btn-sm btn-primary">edit</button>
+                                                <button class="btn btn-sm btn-primary bin-edit-btn" th:id="${gb.getId()}">edit</button>
                                                 <button class="btn btn-sm btn-danger bin-delete-btn" th:id="${gb.getId()}">delete</button>
                                             </td>
                                         </tr>

@@ -19,6 +19,15 @@ public enum GARBAGE_TYPE {
         return this.value;
     }
 
+    public static GARBAGE_TYPE fromName(String name) {
+        for (GARBAGE_TYPE g : GARBAGE_TYPE.values()) {
+            if (g.name.equalsIgnoreCase(name)) {
+                return g;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString(){
         return this.value;

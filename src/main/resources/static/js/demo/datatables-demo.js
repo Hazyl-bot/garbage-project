@@ -15,3 +15,14 @@ document.querySelectorAll(".bin-delete-btn").forEach((i)=>{i.addEventListener("c
   }
 })})
 
+document.querySelectorAll(".bin-edit-btn").forEach((i)=>{i.addEventListener("click", ()=>{
+  const id = i.id;
+  const location = i.parentNode.parentNode.children[0].innerHTML;
+  const type = i.parentNode.parentNode.children[1].children[0].innerHTML;
+  const capacity = i.parentNode.parentNode.children[2].innerHTML;
+  const contain = i.parentNode.parentNode.children[3].innerHTML;
+  const url = `/garbage/edit?id=${id}&location=${location}&type=${type}&capacity=${capacity}&contain=${contain}`;
+  console.log(url);
+  window.location = url;
+})})
+

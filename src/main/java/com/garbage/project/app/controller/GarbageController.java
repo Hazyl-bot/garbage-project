@@ -70,9 +70,15 @@ public class GarbageController {
         return "redirect:/garbage/gbs";
     }
 
-    @RequestMapping("/edit")
-    public String edit(){
-        return "edit";
+    @GetMapping("/edit")
+    public String edit(@RequestParam String id,@RequestParam("location")String location, @RequestParam("type")String type
+            , @RequestParam("capacity")int capacity, @RequestParam("contain")int contain, Model model){
+        model.addAttribute("id", id);
+        model.addAttribute("defaultLocation", location);
+        model.addAttribute("defaultType", type);
+        model.addAttribute("defaultCapacity", capacity);
+        model.addAttribute("defaultContain", contain);
+        return "editGarbageBin";
     }
 
     @ResponseBody

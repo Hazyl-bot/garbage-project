@@ -179,6 +179,7 @@ public class UserController {
             RecordInfo recordInfo = new RecordInfo(location,userId,r.getType(),r.getGmtCreated());
             infoList.add(recordInfo);
         }
+        LOG.warn(infoList.toString());
         model.addAttribute("records",infoList);
         return "user-profile";
     }

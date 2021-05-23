@@ -113,13 +113,12 @@
                 <tbody>
                 <tr th:each="rc:${records}">
                   <td th:text="${rc.getLocation()}"></td>
-                  <td th:switch="${rc.getType()}">
+                  <td th:switch="${rc.getType().getValue()}">
                     <p th:case="HARMFUL">有害垃圾</p>
                     <p th:case="DRY">干垃圾</p>
                     <p th:case="WET">湿垃圾</p>
                     <p th:case="RECYCLABLE">可回收垃圾</p>
                     <p th:case="OTHER">其他垃圾</p>
-                    <p th:case="*">全部</p>
                   </td>
                   <td th:text="${rc.getGmtCreated()}"></td>
                   <td>

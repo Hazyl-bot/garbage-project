@@ -52,4 +52,14 @@ public class RecordInfo {
     public void setGmtCreated(LocalDateTime gmtCreated) {
         this.gmtCreated = gmtCreated;
     }
+
+    @Override
+    public String toString() {
+        return "RecordInfo{" +
+                "location='" + location + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", type=" + type +
+                ", gmtCreated=" + gmtCreated +
+                '}';
+    }
 }

@@ -72,32 +72,22 @@
                                             <th>lastClean</th>
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>location</th>
-                                            <th>type</th>
-                                            <th>capacity</th>
-                                            <th>contain</th>
-                                            <th>lastClean</th>
-                                        </tr>
-                                    </tfoot>
                                     <tbody>
                                         <tr th:each="gb:${gbs}">
                                             <td th:text="${gb.getLocation()}"></td>
-                                            <td th:switch="${gb.getType()}">
+                                            <td th:switch="${gb.getType().getValue()}">
                                                 <p th:case="HARMFUL">有害垃圾</p>
                                                 <p th:case="DRY">干垃圾</p>
                                                 <p th:case="WET">湿垃圾</p>
                                                 <p th:case="RECYCLABLE">可回收垃圾</p>
                                                 <p th:case="OTHER">其他垃圾</p>
-                                                <p th:case="*">全部</p>
                                             </td>
                                             <td th:text="${gb.getCapacity()}"></td>
                                             <td th:text="${gb.getContain()}"></td>
                                             <td th:text="${gb.getLastClean()}"></td>
                                             <td>
                                                 <button class="btn btn-sm btn-primary">edit</button>
-                                                <button class="btn btn-sm btn-danger">delete</button>
+                                                <button class="btn btn-sm btn-danger bin-delete-btn" th:id="${gb.getId()}">delete</button>
                                             </td>
                                         </tr>
                                     </tbody>

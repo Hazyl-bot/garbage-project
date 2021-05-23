@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -58,11 +59,12 @@ public class GarbageController {
         return "redirect:/garbage/gbs";
     }
 
+    @ResponseBody
     @RequestMapping("/remove")
     public String remove(@RequestParam String id){
         boolean b = garbageService.deleteBin(id);
         if (b){
-            return "garbageBin";
+            return "200";
         }else {
             LOG.error("delete failed");
             return "500";

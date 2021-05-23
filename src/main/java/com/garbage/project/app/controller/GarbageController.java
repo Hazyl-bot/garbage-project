@@ -1,12 +1,16 @@
 package com.garbage.project.app.controller;
 
 import com.garbage.project.model.GarbageBin;
+import com.garbage.project.model.Record;
+import com.garbage.project.param.RecordQueryParam;
 import com.garbage.project.param.UserLoginInfo;
 import com.garbage.project.service.GarbageService;
+import com.garbage.project.service.RecordService;
 import com.garbage.project.util.GARBAGE_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +28,15 @@ public class GarbageController {
 
     private static final Logger LOG = LoggerFactory.getLogger(GarbageController.class);
 
-    @Autowired
+
     private GarbageService garbageService;
+    private RecordService recordService;
+
+    @Autowired
+    public GarbageController(GarbageService garbageService, RecordService recordService) {
+        this.garbageService = garbageService;
+        this.recordService = recordService;
+    }
 
     @RequestMapping("/add")
     public String add(@RequestParam("location")String location, @RequestParam("type")String type
@@ -59,10 +70,24 @@ public class GarbageController {
         return "redirect:/garbage/gbs";
     }
 
+    @RequestMapping("/edit")
+    public String edit(){
+        return "edit";
+    }
+
     @ResponseBody
     @RequestMapping("/remove")
     public String remove(@RequestParam String id){
         boolean b = garbageService.deleteBin(id);
+        RecordQueryParam param = new RecordQueryParam();
+        param.setGarbageBinId(id);
+        List<Record> content = recordService.list(param).getContent();
+        for (Record r:content){
+            boolean delResult = recordService.deleteRecord(r.getId());
+            if (!delResult){
+                return "500";
+            }
+        }
         if (b){
             return "200";
         }else {

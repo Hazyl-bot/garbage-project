@@ -21,6 +21,6 @@ public enum GARBAGE_TYPE {
 
     @Override
     public String toString(){
-        return this.name;
+        return this.value;
     }
 }

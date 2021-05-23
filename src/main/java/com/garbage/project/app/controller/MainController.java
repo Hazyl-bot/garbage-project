@@ -160,6 +160,7 @@ public class MainController {
         Record record = new Record();
         record.setOwnerId(userId);
         record.setGarbageBinId(garbageBin.getId());
+        record.setType(garbageBin.getType());
         record.setGmtCreated(LocalDateTime.now());
         record.setGmtModified(LocalDateTime.now());
         Record add = recordService.add(record);

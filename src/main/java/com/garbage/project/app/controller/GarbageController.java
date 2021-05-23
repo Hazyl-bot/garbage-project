@@ -1,7 +1,6 @@
 package com.garbage.project.app.controller;
 
 import com.garbage.project.model.GarbageBin;
-import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.UserLoginInfo;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.util.GARBAGE_TYPE;
@@ -63,7 +62,7 @@ public class GarbageController {
     public String remove(@RequestParam String id){
         boolean b = garbageService.deleteBin(id);
         if (b){
-            return "tables";
+            return "garbageBin";
         }else {
             LOG.error("delete failed");
             return "500";
@@ -82,7 +81,7 @@ public class GarbageController {
 
         List<GarbageBin> all = garbageService.getAll();
         model.addAttribute("gbs",all);
-        return "tables";
+        return "garbageBin";
     }
 
     @GetMapping("/gb")

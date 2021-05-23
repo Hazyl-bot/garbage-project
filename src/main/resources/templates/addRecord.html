@@ -50,9 +50,15 @@
         <form th:action="@{/record/add}" method="post">
           <fieldset>
             <legend>GarbageBin information</legend>
+            <p style="color:red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
             <div class="form-group">
               <label class="required">location</label>
-              <input type="text" name="location" class="form-control" placeholder="Fill in the location">
+              <select class="form-control" name="location">
+                <option th:each="l:${locations}"
+                        th:text="${l}"
+                        th:value="${l}">
+                </option>
+              </select>
             </div>
             <div class="form-group">
               <label>types</label>

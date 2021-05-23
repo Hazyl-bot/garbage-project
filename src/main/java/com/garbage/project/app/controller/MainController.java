@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -138,7 +139,7 @@ public class MainController {
      * */
     @PostMapping("/record/add")
     public String addRecord(@RequestParam String location,@RequestParam String type,Model model,
-                            HttpServletRequest request,HttpServletResponse response){
+                            HttpServletRequest request, RedirectAttributes redAttrs){
         GarbageQueryParam gbParam = new GarbageQueryParam();
         gbParam.setLocation(location);
         gbParam.setType(GARBAGE_TYPE.valueOf(type));
@@ -146,12 +147,12 @@ public class MainController {
         List<GarbageBin> content = garbageService.list(gbParam).getContent();
 
         if (content.isEmpty()){
-            model.addAttribute("msg","找不到所选垃圾箱或类型不匹配！");
+            redAttrs.addFlashAttribute("msg","找不到所选垃圾箱或类型不匹配！");
             return "redirect:/takeout";
         }
         GarbageBin garbageBin = content.get(0);
         if (garbageBin.getContain()>=garbageBin.getCapacity()){
-            model.addAttribute("msg","垃圾箱已满，请选择其他可用垃圾箱！");
+            redAttrs.addFlashAttribute("msg","垃圾箱已满，请选择其他可用垃圾箱！");
             return "redirect:/takeout";
         }
         UserLoginInfo info = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
@@ -172,7 +173,7 @@ public class MainController {
             LOGGER.warn("add failed");
         }
         //回到历史记录页面
-        return "records";
+        return "user-profile";
     }
 
     private Map<Integer, Long> getMonthlyData(String userId){

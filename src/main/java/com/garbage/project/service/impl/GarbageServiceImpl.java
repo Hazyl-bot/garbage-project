@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -178,6 +178,9 @@ public class GarbageServiceImpl implements GarbageService {
         }
         if (garbageBin.getContain()!=null){
             updateData.set("contain", garbageBin.getContain());
+            if (garbageBin.getContain()==0){
+                updateData.set("lastClean",LocalDateTime.now());
+            }
         }
         updateData.set("gmtModified", LocalDateTime.now());
         UpdateResult result = mongoTemplate.updateFirst(query, updateData, GarbageBin.class);
@@ -202,8 +205,7 @@ public class GarbageServiceImpl implements GarbageService {
             logger.error("id data is null");
             return null;
         }
-        GarbageBin garbageBin = mongoTemplate.findById(id, GarbageBin.class);
-        return garbageBin;
+        return mongoTemplate.findById(id, GarbageBin.class);
     }
 
     @Override

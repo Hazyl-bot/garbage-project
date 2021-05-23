@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/recordtest")
+@RequestMapping("/test/record")
 public class RecordTestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordTestController.class);
@@ -67,6 +67,7 @@ public class RecordTestController {
             }
             //这里minus起作用了，但是数据库里还是now，可能事库内置识别的问题
             LocalDateTime created = LocalDateTime.now().minusMonths(i);
+            LocalDateTime c = LocalDateTime.of(2021,(r^2)%12+1,10,1,0,0);
             record.setGmtCreated(created);
             record.setGmtModified(LocalDateTime.now());
             init.add(record);
@@ -129,7 +130,7 @@ public class RecordTestController {
         if (records.isEmpty()){
             return null;
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (Record item: records){
             sb.append(item.toString());
         }
@@ -145,17 +146,16 @@ public class RecordTestController {
         return list.getContent().toString();
     }
 
-    @RequestMapping("/getData")
+    @RequestMapping("/getdata")
     public String getData(){
         String userId = "6095d0e0552f033a607f5860";
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(userId);
         Map<String, Long> data = recordService.CountByTypeAndUser(param);
-        String s = JSON.toJSONString(data);
-        return s;
+        return JSON.toJSONString(data);
     }
 
-    @RequestMapping("/getData2")
+    @RequestMapping("/getdata2")
     public String getData2(){
         String userId = "6095d0e0552f033a607f5860";
         RecordQueryParam param = new RecordQueryParam();

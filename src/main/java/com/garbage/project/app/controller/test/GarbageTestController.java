@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 
 @RestController
-@RequestMapping("/gbtest")
+@RequestMapping("/test/gb")
 public class GarbageTestController {
 
     private static final Logger LOG = LoggerFactory.getLogger(GarbageTestController.class);
@@ -111,7 +111,7 @@ public class GarbageTestController {
 
     @GetMapping("/testgetall")
     public String getAll(){
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         List<GarbageBin> list = garbageService.getAll();
         for (GarbageBin item:list){

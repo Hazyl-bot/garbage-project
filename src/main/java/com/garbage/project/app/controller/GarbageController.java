@@ -5,21 +5,17 @@ import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.UserLoginInfo;
 import com.garbage.project.service.GarbageService;
 import com.garbage.project.util.GARBAGE_TYPE;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -35,7 +31,7 @@ public class GarbageController {
     public String add(@RequestParam("location")String location, @RequestParam("type")String type
             , @RequestParam("capacity")int capacity, @RequestParam("contain")int contain){
         GarbageBin garbageBin = new GarbageBin();
-        garbageBin.setLocation(location);//
+        garbageBin.setLocation(location);
         garbageBin.setType(GARBAGE_TYPE.valueOf(type));
         garbageBin.setCapacity(capacity);
         garbageBin.setContain(contain);
@@ -45,6 +41,33 @@ public class GarbageController {
         GarbageBin bin = garbageService.add(garbageBin);
         LOG.warn(bin.toString()+ " has been added");
         return "redirect:/garbage/gbs";
+    }
+
+    @RequestMapping("/update")
+    public String update(@RequestParam String id,@RequestParam("location")String location, @RequestParam("type")String type
+            , @RequestParam("capacity")int capacity, @RequestParam("contain")int contain){
+        GarbageBin param = new GarbageBin();
+        param.setId(id);
+        param.setLocation(location);
+        param.setType(GARBAGE_TYPE.valueOf(type));
+        param.setCapacity(capacity);
+        param.setContain(contain);
+        LOG.warn(param.toString());
+        param.setGmtModified(LocalDateTime.now());
+        garbageService.modifyBin(param);
+        LOG.warn(param+ " has been updated");
+        return "redirect:/garbage/gbs";
+    }
+
+    @RequestMapping("/remove")
+    public String remove(@RequestParam String id){
+        boolean b = garbageService.deleteBin(id);
+        if (b){
+            return "tables";
+        }else {
+            LOG.error("delete failed");
+            return "500";
+        }
     }
 
     @RequestMapping("/gbs")

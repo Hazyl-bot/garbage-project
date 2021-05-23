@@ -8,7 +8,6 @@ import com.garbage.project.param.UserQueryParam;
 import com.garbage.project.service.RecordService;
 import com.garbage.project.service.UserService;
 import com.garbage.project.util.MailUtil;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -120,13 +120,12 @@ public class UserController {
         // 判断登录名是否已存在
         User regedUser = getUserByLoginName(name);
         if (regedUser != null) {
-            model.addAttribute("msg","login name already exist");
+            model.addAttribute("msg","用户名已被占用");
             LOG.error("login name already exist");
-            LOG.error(regedUser.toString());
             return "register";
         }
         if (!password.equals(password2)){
-            model.addAttribute("msg","passwords are not the same!");
+            model.addAttribute("msg","两次密码输入不相同！");
             LOG.error("passwords are not the same!");
             return "register";
         }
@@ -136,10 +135,10 @@ public class UserController {
         user.setEmail(email);
         User newUser = userService.add(user);
         if (newUser != null && StringUtils.hasText(newUser.getId())) {
-            model.addAttribute("msg", "register succeed");
+            model.addAttribute("msg", "注册成功，请登录");
             LOG.error("register succeed");
         } else {
-            model.addAttribute("msg", "register failed");
+            model.addAttribute("msg", "注册失败，请联系工作人员");
             LOG.error("register failed");
         }
         return "login";
@@ -159,6 +158,8 @@ public class UserController {
         model.addAttribute("username", userName);
 
         User user = userService.getUserById(userId);
+        String email = user.getEmail();
+        model.addAttribute("email",email);
         RecordQueryParam param = new RecordQueryParam();
         param.setOwnerId(user.getId());
         Page<Record> records = recordService.list(param);
@@ -174,32 +175,54 @@ public class UserController {
         return "forgot-password";
     }
 
-    @RequestMapping("/rpwd")
-    public String send(@Param("email")String email,Model model){
+    @RequestMapping("/send")
+    public String send(@RequestParam String email,HttpServletRequest request,Model model){
         LOG.warn("send方法被调用");
         UserQueryParam param = new UserQueryParam();
         param.setEmail(email);
         Page<User> list = userService.list(param);
         if (list == null || list.isEmpty()){
             model.addAttribute("msg","用户不存在,请先注册");
-            return "register";
+            return "forgot-password";
         }
         if (list.getContent().size()>1){
             LOG.warn("不止一个用户，请注销账号或联系管理员");
             model.addAttribute("msg","不止一个用户，请注销账号或联系管理员");
-            return "login";
+            return "forgot-password";
         }
         User user = list.getContent().get(0);
         String url = "127.0.0.1/user/forgotPassword";
         try {
             MailUtil.sendEmail(url,email);
+            request.setAttribute("userId",user.getId());
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("failed to send email");
         }
         LOG.warn("邮件发送成功，请查看邮箱");
         model.addAttribute("msg","邮件发送成功，请查看邮箱");
+        return "forgot-password";
+    }
+
+    @RequestMapping("/reset")
+    public String resetPwd(@RequestParam String pwd,@RequestParam String pwd2
+            ,int code,HttpServletRequest request,Model model){
+        //TODO: 加入redis判断
+        String userId = (String) request.getSession().getAttribute("userId");
+        User user = userService.getUserById(userId);
+        if (user==null){
+            model.addAttribute("msg","未找到用户，请联系管理员");
+            return "forgot-password";
+        }
+        if (!pwd.equals(pwd2)){
+            model.addAttribute("msg","2次输入密码不匹配!");
+            return "forgot-password";
+        }
+        user.setPassword(pwd);
+        userService.modifyUser(user);
+        model.addAttribute("msg","密码修改成功，请用新密码登录");
         return "login";
     }
+
 
 }

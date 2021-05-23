@@ -18,8 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -219,24 +221,30 @@ public class UserController {
         return "forgot-password";
     }
 
+    @GetMapping("/resetPwd")
+    public String resetPwd(){
+        return "reset-password";
+    }
+
     @RequestMapping("/reset")
-    public String resetPwd(@RequestParam String pwd,@RequestParam String pwd2
-            ,int code,HttpServletRequest request,Model model){
+    public String reset(@RequestParam String pwd, @RequestParam String pwd2, @RequestParam String callbackUrl
+            , HttpServletRequest request, RedirectAttributes redirectAttributes){
         //TODO: 加入redis判断
-        String userId = (String) request.getSession().getAttribute("userId");
+        UserLoginInfo userLoginInfo = (UserLoginInfo) request.getSession().getAttribute("userLoginInfo");
+        String userId = userLoginInfo.getUserId();
         User user = userService.getUserById(userId);
         if (user==null){
-            model.addAttribute("msg","未找到用户，请联系管理员");
-            return "forgot-password";
+            redirectAttributes.addFlashAttribute("msg","未找到用户，请联系管理员");
+            return "redirect:" + callbackUrl;
         }
         if (!pwd.equals(pwd2)){
-            model.addAttribute("msg","2次输入密码不匹配!");
-            return "forgot-password";
+            redirectAttributes.addFlashAttribute("msg","2次输入密码不匹配!");
+            return "redirect:" + callbackUrl;
         }
         user.setPassword(pwd);
         userService.modifyUser(user);
-        model.addAttribute("msg","密码修改成功，请用新密码登录");
-        return "login";
+        redirectAttributes.addFlashAttribute("msg","密码修改成功，请用新密码登录");
+        return "redirect:/user/login";
     }
 
 

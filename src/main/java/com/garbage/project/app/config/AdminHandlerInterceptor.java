@@ -20,8 +20,8 @@ public class AdminHandlerInterceptor implements HandlerInterceptor {
         Boolean isAdmin = (Boolean) request.getSession().getAttribute("isAdmin");
         if(!isAdmin){
             request.setAttribute("msg","NO ACCESS, PLEASE LOGIN BY ADMIN ACCOUNT");
-            //request.getRequestDispatcher("/user/login").forward(request,response);
-            request.getRequestDispatcher("/notFound").forward(request,response);
+            request.getRequestDispatcher("/user/login").forward(request,response);
+            //request.getRequestDispatcher("/notFound").forward(request,response);
             return false;
         }else{
             return true;

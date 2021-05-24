@@ -2,6 +2,7 @@ package com.garbage.project.app.controller;
 
 import com.garbage.project.model.GarbageBin;
 import com.garbage.project.model.Record;
+import com.garbage.project.param.GarbageQueryParam;
 import com.garbage.project.param.RecordQueryParam;
 import com.garbage.project.param.UserLoginInfo;
 import com.garbage.project.service.GarbageService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -120,6 +122,17 @@ public class GarbageController {
     @GetMapping("/gb")
     public String toAddPage(Model model){
         return "addGarbageBin";
+    }
+
+    private List<String> getTypeData(String location){
+        GarbageQueryParam param = new GarbageQueryParam();
+        param.setLocation(location);
+        List<GarbageBin> list = garbageService.list(param).getContent();
+        List<String> data = new ArrayList<>();
+        for (GarbageBin item:list){
+            data.add(item.getType().getValue());
+        }
+        return data;
     }
 
 }

@@ -104,8 +104,12 @@ public class UserServiceImpl implements UserService {
             logger.error("input User is null");
             return null;
         }
-        user.setGmtCreated(LocalDateTime.now());
-        user.setGmtModified(LocalDateTime.now());
+        if (user.getGmtCreated()==null){
+            user.setGmtCreated(LocalDateTime.now());
+        }
+        if (user.getGmtModified()==null){
+            user.setGmtModified(LocalDateTime.now());
+        }
         return mongoTemplate.insert(user);
     }
 

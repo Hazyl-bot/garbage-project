@@ -33,15 +33,15 @@ public class RecordTestController {
 
     private List<Record> init = new ArrayList<>();
 
-    @PostConstruct
-    private void initTest(){
+
+    private void initTest(String ownerId,String gbId){
         SecureRandom random = new SecureRandom();
-        for (int i=0;i<10;i++){
+        for (int i=0;i<30;i++){
             int r = random.nextInt(6)+1;
             Record record = new Record();
             //随便找一个账号ID
-            record.setOwnerId("6095d0e0552f033a607f5860");
-            record.setGarbageBinId("609c7acd47418c024984d577");
+            record.setOwnerId(ownerId);
+            record.setGarbageBinId(gbId);
             switch (r){
                 case 1:
                     record.setType(GARBAGE_TYPE.RECYCLABLE);
@@ -66,8 +66,7 @@ public class RecordTestController {
                     break;
             }
             //这里minus起作用了，但是数据库里还是now，可能事库内置识别的问题
-            LocalDateTime created = LocalDateTime.now().minusMonths(i);
-            LocalDateTime c = LocalDateTime.of(2021,(r^2)%12+1,10,1,0,0);
+            LocalDateTime created = LocalDateTime.now().withMonth((r * random.nextInt(100)) % 12 + 1);
             record.setGmtCreated(created);
             record.setGmtModified(LocalDateTime.now());
             init.add(record);
@@ -76,14 +75,7 @@ public class RecordTestController {
 
     @GetMapping("/testadd")
     public String add(){
-//        Record record = new Record();
-//        //随便找一个账号ID
-//        record.setOwnerId("6095d0e0552f033a607f5860");
-//        record.setGarbageBinId("njupt-2");
-//        record.setType(GARBAGE_TYPE.OTHER);
-//        record.setGmtCreated(LocalDateTime.now());
-//        record.setGmtModified(LocalDateTime.now());
-//        Record add = recordService.add(record);
+        initTest("6095d0e0552f033a607f5860","609c7acd47418c024984d576");
         //暂时不考虑垃圾箱和记录类型的对应关系
         for (Record item:
              init) {

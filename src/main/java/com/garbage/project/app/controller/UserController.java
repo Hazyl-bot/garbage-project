@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -80,13 +81,21 @@ public class UserController {
     @RequestMapping(path = "/authenticate")
     public String login(@RequestParam String name, @RequestParam String password, HttpServletRequest request,
                      HttpServletResponse response,Model model) {
+        if (name==null || !StringUtils.hasText(name)){
+            model.addAttribute("msg","用户名不能为空");
+            return "login";
+        }
+        if (password==null || !StringUtils.hasText(password)){
+            model.addAttribute("msg","密码不能为空");
+            return "login";
+        }
         // 根据登录名查询用户
         User regedUser = getUserByLoginName(name);
 
         // 找不到此登录用户
         if (regedUser == null) {
             model.addAttribute("result", false);
-            model.addAttribute("msg", "userName not correct");
+            model.addAttribute("msg", "用户名不存在");
             model.addAttribute("url","login");
             return "login";
         }
@@ -101,10 +110,10 @@ public class UserController {
             session.setAttribute("userLoginInfo", userLoginInfo);
             session.setAttribute("isAdmin",regedUser.isAdmin());
             model.addAttribute("result", true);
-            model.addAttribute("msg", "login successful");
+            model.addAttribute("msg", "登录成功");
             return "redirect:/";
         } else {
-            model.addAttribute("msg", "userName or password not correct");
+            model.addAttribute("msg", "用户名或密码错误");
             model.addAttribute("result", false);
             return "login";
         }
@@ -132,6 +141,20 @@ public class UserController {
     @RequestMapping("/registerAction")
     public String registerAction(@RequestParam String name, @RequestParam String email
             ,@RequestParam String password,@RequestParam String password2,Model model) {
+
+        if (name==null || !StringUtils.hasText(name)){
+            model.addAttribute("msg","用户名不能为空");
+            return "register";
+        }
+        if (email==null || !StringUtils.hasText(email)){
+            model.addAttribute("msg","邮箱不能为空");
+            return "register";
+        }
+        if (password==null || !StringUtils.hasText(password)){
+            model.addAttribute("msg","密码不能为空");
+            return "register";
+        }
+
 
         // 判断登录名是否已存在
         User regedUser = getUserByLoginName(name);
@@ -249,6 +272,7 @@ public class UserController {
         return "reset-password";
     }
 
+    //TODO: 这里如果有错误信息不能重定向，还是要在这个页面
     @RequestMapping("/reset")
     public String reset(@RequestParam String pwd, @RequestParam String pwd2, @RequestParam String callbackUrl, String code
             , HttpServletRequest request, RedirectAttributes redirectAttributes){

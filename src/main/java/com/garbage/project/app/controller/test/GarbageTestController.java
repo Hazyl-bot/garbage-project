@@ -32,7 +32,7 @@ public class GarbageTestController {
 
     @PostConstruct
     private void initTest(){
-        for (int i=0;i<5;i++){
+        for (int i=0;i<12;i++){
             GarbageBin garbageBin = new GarbageBin();
             garbageBin.setCapacity(100*i);
             garbageBin.setContain(0);

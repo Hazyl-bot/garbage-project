@@ -48,9 +48,6 @@ public class GarbageController {
         garbageBin.setType(GARBAGE_TYPE.valueOf(type));
         garbageBin.setCapacity(capacity);
         garbageBin.setContain(contain);
-        LOG.warn(garbageBin.toString());
-        garbageBin.setGmtCreated(LocalDateTime.now());
-        garbageBin.setGmtModified(LocalDateTime.now());
         GarbageBin bin = garbageService.add(garbageBin);
         LOG.warn(bin.toString()+ " has been added");
         return "redirect:/garbage/gbs";

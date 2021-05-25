@@ -154,8 +154,12 @@ public class GarbageServiceImpl implements GarbageService {
             logger.error("garbage bin data is null");
             return null;
         }
-        garbageBin.setGmtCreated(LocalDateTime.now());
-        garbageBin.setGmtModified(LocalDateTime.now());
+        if (garbageBin.getGmtCreated()==null){
+            garbageBin.setGmtCreated(LocalDateTime.now());
+        }
+        if (garbageBin.getGmtModified()==null){
+            garbageBin.setGmtModified(LocalDateTime.now());
+        }
         return mongoTemplate.insert(garbageBin);
     }
 

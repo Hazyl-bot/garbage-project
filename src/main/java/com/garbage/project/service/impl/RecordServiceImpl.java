@@ -189,8 +189,13 @@ public class RecordServiceImpl implements RecordService {
             LOG.error("record data is null");
             return null;
         }
-        record.setGmtCreated(LocalDateTime.now());
-        record.setGmtModified(LocalDateTime.now());
+        if (record.getGmtCreated()==null){
+            record.setGmtCreated(LocalDateTime.now());
+        }
+        if (record.getGmtModified()==null){
+            record.setGmtModified(LocalDateTime.now());
+        }
+
         return mongoTemplate.insert(record);
     }
 

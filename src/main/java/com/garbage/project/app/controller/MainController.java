@@ -32,9 +32,6 @@ import java.util.Map;
 @Controller
 public class MainController {
 
-    //TODO:设置新密码页面和后端方法（UserController),丢垃圾完成后回到个人资料页
-    // BUG：丢垃圾表单提交无效
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private final GarbageService garbageService;
@@ -161,8 +158,6 @@ public class MainController {
         record.setOwnerId(userId);
         record.setGarbageBinId(garbageBin.getId());
         record.setType(garbageBin.getType());
-        record.setGmtCreated(LocalDateTime.now());
-        record.setGmtModified(LocalDateTime.now());
         Record add = recordService.add(record);
         if (add!=null){
             LOGGER.warn("Record "+add+" has been added");

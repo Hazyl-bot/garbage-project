@@ -25,7 +25,3 @@ document.querySelectorAll(".bin-edit-btn").forEach((i)=>{i.addEventListener("cli
   console.log(url);
   window.location = url;
 })})
-
-document.querySelector(".bin-edit-submit-btn").addEventListener("click", async ()=>{
-
-})

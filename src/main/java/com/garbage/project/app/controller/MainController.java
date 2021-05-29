@@ -99,7 +99,9 @@ public class MainController {
         List<String> gbIds = new ArrayList<>();
         List<String> types = new ArrayList<>();
         for (GarbageBin item: garbageBins){
-            locations.add(item.getLocation());
+            if (!locations.contains(item.getLocation())) {
+                locations.add(item.getLocation());
+            }
             gbIds.add(item.getId());
             if (!types.contains(item.getType().getName())){
                 types.add(item.getType().getName());

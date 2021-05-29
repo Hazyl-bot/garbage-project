@@ -53,16 +53,17 @@
             <p style="color:red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
             <div class="form-group">
               <label class="required">location</label>
-              <select class="form-control" name="location">
+              <select class="form-control" name="location" id="location-select">
                 <option th:each="l:${locations}"
                         th:text="${l}"
-                        th:value="${l}">
+                        th:value="${l}"
+                        class="options">
                 </option>
               </select>
             </div>
             <div class="form-group">
               <label>types</label>
-              <select class="form-control" name="type">
+              <select class="form-control" name="type" id="type-select">
                 <option th:each="t:${T(com.garbage.project.util.GARBAGE_TYPE).values()}"
                         th:text="${t.getName()}"
                         th:value="${t.getValue()}">

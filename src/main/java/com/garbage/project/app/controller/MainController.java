@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -170,6 +171,19 @@ public class MainController {
         }
         //回到历史记录页面
         return "redirect:/user/profile";
+    }
+
+    @ResponseBody
+    @RequestMapping("/getTypes")
+    private List<String> getTypeByLocation(String location){
+        GarbageQueryParam param = new GarbageQueryParam();
+        param.setLocation(location);
+        List<GarbageBin> list = garbageService.list(param).getContent();
+        List<String> data = new ArrayList<>();
+        for (GarbageBin item:list){
+            data.add(item.getType().getValue());
+        }
+        return data;
     }
 
     private Map<Integer, Long> getMonthlyData(String userId){

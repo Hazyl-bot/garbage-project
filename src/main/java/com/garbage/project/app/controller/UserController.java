@@ -281,7 +281,6 @@ public class UserController {
         String userId = null;
         if (userLoginInfo == null && !code.isEmpty()){
             userId = template.boundValueOps(code).get();
-            template.delete(code);
         } else if (userLoginInfo == null) {
             redirectAttributes.addFlashAttribute("msg","链接非法");
             return "redirect:/user/login";
@@ -295,11 +294,13 @@ public class UserController {
         }
         if (!pwd.equals(pwd2)){
             redirectAttributes.addFlashAttribute("msg","2次输入密码不匹配!");
+            LOG.info("redirect to: " + callbackUrl);
             return "redirect:" + callbackUrl;
         }
         user.setPassword(pwd);
         userService.modifyUser(user);
         redirectAttributes.addFlashAttribute("msg","密码修改成功，请用新密码登录");
+        template.delete(code);
         return "redirect:/user/login";
     }
 

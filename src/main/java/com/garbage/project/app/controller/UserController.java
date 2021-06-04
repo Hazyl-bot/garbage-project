@@ -203,12 +203,15 @@ public class UserController {
 
 
         List<Record> records = getRecordByUser(userId).getContent();
-        List<RecordInfo> infoList = new ArrayList<>();
+        List<List<String>> infoList = new ArrayList<>();
         for (Record r:records){
+            List<String> info = new ArrayList<>();
             GarbageBin bin = garbageService.getBinById(r.getGarbageBinId());
             String location = bin.getLocation();
-            RecordInfo recordInfo = new RecordInfo(location,userId,r.getType(),r.getGmtCreated());
-            infoList.add(recordInfo);
+            info.add(location);
+            info.add(r.getType().getName());
+            info.add(r.getGmtCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+            infoList.add(info);
         }
         LOG.warn(infoList.toString());
         model.addAttribute("records",infoList);

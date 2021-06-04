@@ -110,24 +110,22 @@
                   <th>DropTime</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="rc:${records}">
-                  <td th:text="${rc.getLocation()}"></td>
-                  <td th:switch="${rc.getType().getValue()}">
-                    <p th:case="HARMFUL">有害垃圾</p>
-                    <p th:case="DRY">干垃圾</p>
-                    <p th:case="WET">湿垃圾</p>
-                    <p th:case="RECYCLABLE">可回收垃圾</p>
-                    <p th:case="WASTE">厨余垃圾</p>
-                    <p th:case="OTHER">其他垃圾</p>
-                  </td>
-                  <td th:text="${rc.getGmtCreated()}"></td>
-                  <td>
-<!--&lt;!&ndash;                    <button class="btn btn-sm btn-primary">edit</button>&ndash;&gt;-->
-<!--                    <button class="btn btn-sm btn-danger bin-delete-btn">delete</button>-->
-                  </td>
-                </tr>
-                </tbody>
+<!--                <tbody>-->
+<!--                <tr th:each="rc:${records}">-->
+<!--                  <td th:text="${rc.getLocation()}"></td>-->
+<!--                  <td th:switch="${rc.getType().getValue()}">-->
+<!--                    <p th:case="HARMFUL">有害垃圾</p>-->
+<!--                    <p th:case="DRY">干垃圾</p>-->
+<!--                    <p th:case="WET">湿垃圾</p>-->
+<!--                    <p th:case="RECYCLABLE">可回收垃圾</p>-->
+<!--                    <p th:case="WASTE">厨余垃圾</p>-->
+<!--                    <p th:case="OTHER">其他垃圾</p>-->
+<!--                  </td>-->
+<!--                  <td th:text="${rc.getGmtCreated()}"></td>-->
+<!--                  <td>-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
               </table>
             </div>
           </div>
@@ -193,6 +191,14 @@
 <!-- Page level plugins -->
 <script th:src="@{/vendor/datatables/jquery.dataTables.min.js}"></script>
 <script th:src="@{/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+
+  const records = [[${records}]];
+  console.log(records);
+  /*]]>*/
+</script>
 
 <!-- Page level custom scripts -->
 <script th:src="@{/js/demo/datatables-demo.js}"></script>

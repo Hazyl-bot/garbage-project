@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>lvan - Login</title>
+    <title>lvan - 重置密码</title>
 
     <!-- Custom fonts for this template-->
     <link th:href="@{~/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css"/>
@@ -38,16 +38,16 @@
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">please input your new password</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">请输入您的新密码</h1>
                                 </div>
                                 <form class="user" action="/user/reset">
                                     <p style="color:red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
                                     <div class="form-group">
                                         <input type="password" name="pwd" class="form-control form-control-user" aria-describedby="emailHelp"
-                                               placeholder="Enter Your New Password">
+                                               placeholder="在这里输入新密码">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" name="pwd2" class="form-control form-control-user" placeholder="Retype Your Password">
+                                        <input type="password" name="pwd2" class="form-control form-control-user" placeholder="重复您的新密码">
                                     </div>
                                     <div class="form-group" hidden>
                                         <input type="password" name="callbackUrl" th:value="'/user/forgeReset?code=' + ${code}">
@@ -56,15 +56,15 @@
                                         <input type="password" name="code" th:value="${code}">
                                     </div>
                                     <button class="btn btn-primary btn-user btn-block" type="submit">
-                                        Login
+                                        提交
                                     </button>
                                 </form>
                                 <hr>
                                 <div class="text-center">
-                                    <a class="small" href="/user/forgotPassword">Forgot Password?</a>
+                                    <a class="small" href="/user/forgotPassword">忘记密码？</a>
                                 </div>
                                 <div class="text-center">
-                                    <a class="small" href="/user/register">Create an Account!</a>
+                                    <a class="small" href="/user/register">创建一个新账号!</a>
                                 </div>
                             </div>
                         </div>

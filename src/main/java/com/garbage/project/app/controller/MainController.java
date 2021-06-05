@@ -163,13 +163,13 @@ public class MainController {
         record.setType(garbageBin.getType());
         Record add = recordService.add(record);
         if (add!=null){
-            LOGGER.warn("Record "+add+" has been added");
+            LOGGER.warn("记录 "+add+" 添加成功");
             Integer contain = garbageBin.getContain();
             garbageBin.setContain(contain+1);
             garbageService.modifyBin(garbageBin);
         }else {
             model.addAttribute("msg","垃圾分类异常，请联系管理员");
-            LOGGER.warn("add failed");
+            LOGGER.warn("添加失败");
         }
         //回到历史记录页面
         return "redirect:/user/profile";

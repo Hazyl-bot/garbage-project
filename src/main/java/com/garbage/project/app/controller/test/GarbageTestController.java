@@ -30,8 +30,8 @@ public class GarbageTestController {
 
     private List<GarbageBin> init = new ArrayList<>();
 
-    @PostConstruct
-    private void initTest(){
+    @GetMapping("/testadd")
+    public String add(){
         for (int i=0;i<12;i++){
             GarbageBin garbageBin = new GarbageBin();
             garbageBin.setCapacity(100*i);
@@ -64,15 +64,6 @@ public class GarbageTestController {
             garbageBin.setLocation("njupt-"+i);
             init.add(garbageBin);
         }
-    }
-
-//    @GetMapping("/getAll")
-//    public Page<GarbageBin> getAll(){
-//        GarbageQueryParam param = new GarbageQueryParam();
-//    }
-
-    @GetMapping("/testadd")
-    public String add(){
         for (GarbageBin item : init){
             GarbageBin add = garbageService.add(item);
             LOG.warn(add.toString());

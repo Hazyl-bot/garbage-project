@@ -9,7 +9,7 @@
     <div class="sidebar-brand-icon rotate-n-15">
       <i class="fas fa-laugh-wink"></i>
     </div>
-    <div class="sidebar-brand-text mx-3" th:text="${session.userLoginInfo.getUserName()}">Welcome User!<sup>2</sup></div>
+    <div class="sidebar-brand-text mx-3" th:text="${session.userLoginInfo.getUserName()}">欢迎!<sup>2</sup></div>
   </a>
 
   <!-- Divider -->
@@ -19,7 +19,7 @@
   <li class="nav-item active">
     <a class="nav-link" href="/">
       <i class="fas fa-fw fa-tachometer-alt"></i>
-      <span>Dashboard</span></a>
+      <span>主界面</span></a>
   </li>
 
   <!-- Divider -->
@@ -27,7 +27,7 @@
 
   <!-- Heading -->
   <div class="sidebar-heading">
-    Interface
+    接口
   </div>
 
 
@@ -40,13 +40,13 @@
   <li class="nav-item">
     <a class="nav-link" href="tables.html" th:href="@{/garbage/gbs}">
       <i class="fas fa-tasks"></i>
-      <span>Bin Manage</span></a>
+      <span>垃圾箱管理</span></a>
   </li>
 
   <li class="nav-item">
     <a class="nav-link" href="tables.html" th:href="@{/user/profile}">
       <i class="fas fa-file fa"></i>
-      <span>User Profile</span></a>
+      <span>个人信息</span></a>
   </li>
 
     <!-- Divider -->
@@ -54,21 +54,21 @@
 
   <!-- Heading -->
   <div class="sidebar-heading">
-    Account
+    账户
   </div>
 
   <!-- Nav Item - Tables -->
   <li class="nav-item">
     <a class="nav-link" href="tables.html" th:href="@{/user/resetPwd}">
       <i class="fas fa-fw fa-redo"></i>
-      <span>Reset Password</span></a>
+      <span>重置密码</span></a>
   </li>
 
   <!-- Nav Item - Charts -->
   <li class="nav-item">
     <a class="nav-link" href="/user/logout">
       <i class="fas fa-sign-out-alt fa-chart-area"></i>
-      <span>Logout</span></a>
+      <span>登出</span></a>
   </li>
 
   <!-- Divider -->
@@ -127,7 +127,7 @@
     <li class="nav-item dropdown no-arrow">
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="mr-2 d-none d-lg-inline text-gray-600 small">Welcome [[${session.userLoginInfo.userName}]]</span>
+        <span class="mr-2 d-none d-lg-inline text-gray-600 small">欢迎 [[${session.userLoginInfo.userName}]]</span>
         <img class="img-profile rounded-circle"
              th:src="@{/img/undraw_profile.svg}">
       </a>
@@ -136,16 +136,16 @@
            aria-labelledby="userDropdown">
         <a class="dropdown-item" href="/user/profile">
           <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-          Profile
+          我的
         </a>
         <a class="dropdown-item" href="/user/resetPwd">
           <i class="fas fa-redo fa-sm fa-fw mr-2 text-gray-400"></i>
-          Reset Password
+          重置密码
         </a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="/user/logout" data-toggle="modal" data-target="#logoutModal">
           <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-          Logout
+          登出
         </a>
       </div>
     </li>

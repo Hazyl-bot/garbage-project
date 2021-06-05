@@ -275,7 +275,6 @@ public class UserController {
         return "reset-password";
     }
 
-    //TODO: 这里如果有错误信息不能重定向，还是要在这个页面
     @RequestMapping("/reset")
     public String reset(@RequestParam String pwd, @RequestParam String pwd2, @RequestParam String callbackUrl, String code
             , HttpServletRequest request, RedirectAttributes redirectAttributes){

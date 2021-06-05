@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>编辑垃圾箱</title>
 
     <!-- Custom fonts for this template -->
     <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
@@ -49,17 +49,17 @@
 
                     <form th:action="@{/garbage/update}" method="post">
                         <fieldset>
-                            <legend>Edit GarbageBin</legend>
+                            <legend>垃圾箱编辑</legend>
                             <div class="form-group" hidden>
-                                <label class="required">contain</label>
+                                <label class="required">垃圾箱ID</label>
                                 <input name="id" class="form-control"th:value="${id}">
                             </div>
                             <div class="form-group">
-                                <label class="required">location</label>
-                                <input type="text" name="location" class="form-control" placeholder="Fill in the location" th:value="${defaultLocation}">
+                                <label class="required">地址</label>
+                                <input type="text" name="location" class="form-control" placeholder="例如：njupt-6" th:value="${defaultLocation}">
                             </div>
                             <div class="form-group">
-                                <label>types</label>
+                                <label>垃圾类型</label>
                                 <select class="form-control" name="type">
                                     <option th:each="t:${T(com.garbage.project.util.GARBAGE_TYPE).values()}"
                                             th:text="${t.getName()}"
@@ -69,12 +69,12 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="required">capacity</label>
-                                <input type="number" name="capacity" class="form-control" placeholder="Fill in the capacity" th:value="${defaultCapacity}">
+                                <label class="required">最大容量</label>
+                                <input type="number" name="capacity" class="form-control" placeholder="例如：500" th:value="${defaultCapacity}">
                             </div>
                             <div class="form-group">
-                                <label class="required">contain</label>
-                                <input type="number" name="contain" class="form-control" placeholder="Fill in the contain" th:value="${defaultContain}">
+                                <label class="required">当前容量</label>
+                                <input type="number" name="contain" class="form-control" placeholder="0" th:value="${defaultContain}">
                             </div>
                             <button class="btn btn-primary bin-edit-submit-btn" type="submit">submit</button>
                         </fieldset>
@@ -109,19 +109,19 @@
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">准备离开?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">如果您准备结束您的当前会话，请点击下方的“登出”按钮</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="/user/login">Logout</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                    <a class="btn btn-primary" href="/user/logout">登出</a>
                 </div>
             </div>
         </div>

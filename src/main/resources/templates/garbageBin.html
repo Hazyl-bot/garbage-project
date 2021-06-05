@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>垃圾箱添加</title>
 
     <!-- Custom fonts for this template -->
     <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
@@ -48,7 +48,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">GarbageBin</h1>
+                    <h1 class="h3 mb-2 text-gray-800">垃圾箱信息</h1>
 <!--                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.-->
 <!--                        For more information about DataTables, please visit the <a target="_blank"-->
 <!--                            href="https://datatables.net">official DataTables documentation</a>.</p>-->
@@ -56,21 +56,21 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">垃圾箱列表</h6>
                         </div>
-                        <a th:href="@{/garbage/gb}" class="btn btn-sm btn-success">Add GarbageBin</a>
+                        <a th:href="@{/garbage/gb}" class="btn btn-sm btn-success">添加垃圾箱</a>
 
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>location</th>
-                                            <th>type</th>
-                                            <th>capacity</th>
-                                            <th>contain</th>
-                                            <th>lastClean</th>
-                                            <th>options</th>
+                                            <th>地址</th>
+                                            <th>垃圾类型</th>
+                                            <th>最大容量</th>
+                                            <th>当前容量</th>
+                                            <th>上次清理时间</th>
+                                            <th>其他</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -88,9 +88,9 @@
                                             <td th:text="${gb.getContain()}"></td>
                                             <td th:text="${gb.getLastClean()}"></td>
                                             <td>
-                                                <button class="btn btn-sm btn-primary bin-edit-btn" th:id="${gb.getId()}">edit</button>
-                                                <button class="btn btn-sm btn-danger bin-delete-btn" th:id="${gb.getId()}">delete</button>
-                                                <p class="text-danger" style="margin-bottom: 0" th:if="${gb.getContain()} ge ${gb.getCapacity()}">please clean this bin!</p>
+                                                <button class="btn btn-sm btn-primary bin-edit-btn" th:id="${gb.getId()}">编辑</button>
+                                                <button class="btn btn-sm btn-danger bin-delete-btn" th:id="${gb.getId()}">删除</button>
+                                                <p class="text-danger" style="margin-bottom: 0" th:if="${gb.getContain()} ge ${gb.getCapacity()}">垃圾箱已满，请及时调度垃圾车转运！</p>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -128,19 +128,19 @@
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">准备离开?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">如果您准备结束您的当前会话，请点击下方的“登出”按钮</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="/user/login">Logout</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                    <a class="btn btn-primary" href="/user/logout">登出</a>
                 </div>
             </div>
         </div>

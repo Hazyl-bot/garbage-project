@@ -48,7 +48,7 @@
       <div class="container-fluid">
 
         <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">GarbageBin</h1>
+        <h1 class="h3 mb-2 text-gray-800">垃圾箱</h1>
         <!--                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.-->
         <!--                        For more information about DataTables, please visit the <a target="_blank"-->
         <!--                            href="https://datatables.net">official DataTables documentation</a>.</p>-->
@@ -65,20 +65,22 @@
               <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                  <th>location</th>
-                  <th>type</th>
-                  <th>capacity</th>
-                  <th>contain</th>
-                  <th>lastClean</th>
+                  <th>地址</th>
+                  <th>垃圾类型</th>
+                  <th>最大容量</th>
+                  <th>当前容量</th>
+                  <th>上次清理时间</th>
+                  <th>备注</th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
-                  <th>location</th>
-                  <th>type</th>
-                  <th>capacity</th>
-                  <th>contain</th>
-                  <th>lastClean</th>
+                  <th>地址</th>
+                  <th>垃圾类型</th>
+                  <th>最大容量</th>
+                  <th>当前容量</th>
+                  <th>上次清理时间</th>
+                  <th>备注</th>
                 </tr>
                 </tfoot>
                 <tbody>
@@ -96,8 +98,8 @@
                   <td th:text="${gb.getContain()}"></td>
                   <td th:text="${gb.getLastClean()}"></td>
                   <td>
-                    <button class="btn btn-sm btn-primary">edit</button>
-                    <button class="btn btn-sm btn-danger">delete</button>
+                    <button class="btn btn-sm btn-primary">编辑</button>
+                    <button class="btn btn-sm btn-danger">删除</button>
                   </td>
                 </tr>
                 </tbody>
@@ -139,15 +141,15 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+        <h5 class="modal-title" id="exampleModalLabel">准备离开?</h5>
         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
-      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+      <div class="modal-body">如果您准备结束您的当前会话，请点击下方的“登出”按钮</div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" href="/user/login">Logout</a>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+        <a class="btn btn-primary" href="/user/logout">登出</a>
       </div>
     </div>
   </div>

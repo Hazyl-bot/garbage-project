@@ -49,7 +49,7 @@ public class GarbageController {
         garbageBin.setCapacity(capacity);
         garbageBin.setContain(contain);
         GarbageBin bin = garbageService.add(garbageBin);
-        LOG.warn(bin.toString()+ " has been added");
+        LOG.warn(bin.toString()+ " 添加成功");
         return "redirect:/garbage/gbs";
     }
 
@@ -65,7 +65,7 @@ public class GarbageController {
         LOG.warn(param.toString());
         param.setGmtModified(LocalDateTime.now());
         garbageService.modifyBin(param);
-        LOG.warn(param+ " has been updated");
+        LOG.warn(param+ " 更新完成");
         return "redirect:/garbage/gbs";
     }
 
@@ -96,7 +96,7 @@ public class GarbageController {
         if (b){
             return "200";
         }else {
-            LOG.error("delete failed");
+            LOG.error("删除失败");
             return "500";
         }
     }

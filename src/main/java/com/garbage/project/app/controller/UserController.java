@@ -302,7 +302,10 @@ public class UserController {
         user.setPassword(pwd);
         userService.modifyUser(user);
         redirectAttributes.addFlashAttribute("msg","密码修改成功，请用新密码登录");
-        template.delete(code);
+        if (code!=null){
+            template.delete(code);
+        }
+
         return "redirect:/user/login";
     }
 
